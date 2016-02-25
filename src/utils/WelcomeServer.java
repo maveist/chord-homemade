@@ -14,7 +14,7 @@
  *         . FERMER la connexion
  *
  */
-
+package utils;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -23,7 +23,8 @@ public class WelcomeServer {
 
     // Parsing d'une chaîne de caractères pour trouver un entier
     // En cas d'erreur l'entier retourné est négatif
-    private static int safeParseInt(String i) {
+    @SuppressWarnings("finally")
+	private static int safeParseInt(String i) {
 
 	int res = -1;
 

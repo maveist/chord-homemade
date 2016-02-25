@@ -13,6 +13,7 @@
  *         c. Les hashs sont des entiers entre 0 et n-1
  *
  */
+package utils;
 
 import java.net.*;
 import java.io.*;

@@ -8,7 +8,7 @@
  *   2. Dans l'invite qui s'affiche, taper les commandes à exécuter (help pour la liste)
  *
  */
-
+package utils;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -92,7 +92,8 @@ public class MonitorServer {
 
     // Parsing d'une chaîne de caractères pour trouver un entier
     // En cas d'erreur l'entier retourné est négatif
-    private static int safeParseInt(String i) {
+    @SuppressWarnings("finally")
+	private static int safeParseInt(String i) {
 
 	int res = -1;
 
