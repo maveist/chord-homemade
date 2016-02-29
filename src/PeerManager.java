@@ -34,7 +34,7 @@ public class PeerManager {
 	}
 	
 	public void getInNetwork(){
-		String str = "in:"+Integer.toString(hash)+":"+this.myip;
+		//String str = "in:"+Integer.toString(hash)+":"+this.myip;
 		PrintWriter sortie = new PrintWriter(this.output , true ) ;
 		//sortie.println(msg);
 	}
