@@ -25,6 +25,9 @@ public class NetworkManager {
 	private String myip;
 	private int myHash;
 	
+	private Thread netListener;
+	
+	
 	
 	/*TODO Refaire l'archi.
 		un socket écouteur (successeur)
@@ -50,7 +53,7 @@ public class NetworkManager {
 		//this.getInNetwork();
 	}
 	
-	public void getInNetwork(String ipWelcome, int portWelcome){
+	/*public void getInNetwork(String ipWelcome, int portWelcome){
 		//Communication avec le WelcomeServeur
 		Socket sockWelcome;
 		String ipToContact = "";
@@ -69,7 +72,6 @@ public class NetworkManager {
 			ipToContact = strIn;
 			
 		} catch (IOException e1) {
-			// TODO Auto-generated catch blockhis.port
 			e1.printStackTrace();
 		}
 		
@@ -85,10 +87,8 @@ public class NetworkManager {
 			sortie = new PrintWriter(output , true ) ;
 			sortie.println(str);
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}	
 		
@@ -103,7 +103,7 @@ public class NetworkManager {
 			if(msg[0].equals("go")){
 				
 				 
-				 String msgEnter = "NiceToMeetYou";			// TODO Auto-generated catch block
+				 String msgEnter = "NiceToMeetYou";		
 				 this.hashNext = Integer.parseInt(msg[1]);
 				 this.ipNext = msg[2];
 				 sock = new Socket(this.ipNext, PEER_PORT);
@@ -128,6 +128,51 @@ public class NetworkManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}*/
+	
+	public void getInNetwork(String ipWelcome, int portWelcome){
+		//Communication avec le WelcomeServeur
+				Socket sock;
+				String ipToContact = "";
+				String strIn = "";
+				PrintWriter sortie;
+				OutputStream output;
+				try {
+					sock = new Socket(ipWelcome, portWelcome);
+					OutputStream outToWelcome = sock.getOutputStream();
+					InputStream inWelcome = sock.getInputStream();
+					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
+					toWelcome.print("yo:"+Integer.toString(this.myHash)+":"+this.myip);
+					
+					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
+					strIn = readWelcome.readLine();
+					ipToContact = strIn;
+					sock.close();
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				// Communication avec l'ip d'entrée donnée par WelcomeServer
+				try {
+					sock = new Socket(ipToContact, PEER_PORT);
+					output = sock.getOutputStream();
+					String str = "in:"+Integer.toString(this.myHash)+":"+this.myip;
+					sortie = new PrintWriter(output , true ) ;
+					sortie.println(str);
+					sortie.close();
+					output.close();
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				
+				NetworkListener nl = new NetworkListener(this);
+				this.netListener = new Thread(nl);
+				this.netListener.start();
+				
 	}
 	
 	//TODO Modifier cette méthode en ajoutant la gestion des fingers
@@ -138,8 +183,10 @@ public class NetworkManager {
 				OutputStream output = this.sockNext.getOutputStream();
 				PrintWriter pw = new PrintWriter(output, true);
 				pw.println(str);
+				output.close();
+				pw.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 		}else{
@@ -149,10 +196,12 @@ public class NetworkManager {
 				OutputStream output = sock.getOutputStream();
 				PrintWriter pw = new PrintWriter(output, true);
 				pw.println(str);
+				pw.close();
+				output.close();
 				sock.close();
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -163,24 +212,24 @@ public class NetworkManager {
 		try {
 			String str = Message.CHANGE_PREC.toString() + ":" + hash +":"+ ip;
 			PrintWriter pw = new PrintWriter(this.sockNext.getOutputStream());
+			pw.close();
 			this.sockNext.close();
 			this.sockNext = new Socket(ip, PEER_PORT);
 			this.hashNext = hash;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
 	}
-	
-	
-	//Cette méthode est déclenché lorsque la machine reçoit le message envoyer par
-	//la méthode changeSucc
-	public void changePrec(String ip, int hash){
+		
+	public void sendMessage(String msg){
 		try {
-			this.sockNext.close();
-			this.sockNext = new Socket(ip, PEER_PORT);
-			this.hashNext = hash;
+			OutputStream output = this.sockNext.getOutputStream();
+			PrintWriter pw = new PrintWriter(output);
+			pw.println(msg);
+			pw.close();
+			output.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,5 +242,16 @@ public class NetworkManager {
 	}
 	public void setIpNext(String ipNext) {
 		this.ipNext = ipNext;
+	}
+	
+	public int getNextHash(){
+		return this.hashNext;
+	}
+	
+	public int getHash(){
+		return this.myHash;
+	}
+	public Socket getSockNext(){
+		return this.sockNext;
 	}
 }
