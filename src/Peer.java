@@ -1,14 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.UnknownHostException;
-
 
 
 public class Peer {
@@ -18,7 +9,9 @@ public class Peer {
 	private String ipSuccesseur;
 	
 	
-	
+	/**
+	 * Constructeur d'un pair. Il s'occupe de récupérer l'IP puis le Hash depuis le Hash Server.
+	 */
 	public Peer(){
 		// Récupération de l'IP puis du Hash
 		try {
