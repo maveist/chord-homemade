@@ -20,34 +20,6 @@ public class NetworkManager {
 	private Thread netListener;
 	
 	
-	
-	/*TODO Refaire l'archi.
-		un socket écouteur (successeur)
-		un socket parleur (predecesseur)
-		HashMap de socket (fingers)
-	*/
-/*
-	public NetworkManager(String ip, String ipSucc, int hash){		
-
-		this.myHash = hash;
-		this.myip = ip;
-		this.ipNext = ipSucc;
-		try{
-			this.socket = new Socket(ipSucc, PEER_PORT);
-			this.input = this.socket.getInputStream();
-			this.output = this.socket.getOutputStream();
-		} catch (UnknownHostException e){
-			e.printStackTrace();
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-		// Ne pas l'appeler depuis le constructeur car on a besoin de l'ip du WelcomeServer et port
-		// On va probablement l'appeler depuis le main.
-		//this.getInNetwork();
-	}*/
-	
-
-	
 	// ---------------------------
 	// GESTION DU HASH DU PAIR
 	// ---------------------------
