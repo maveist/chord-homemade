@@ -48,9 +48,9 @@ public class NetworkManager {
 	
 
 	
-	// -----------------------
+	// ---------------------------
 	// GESTION DU HASH DU PAIR
-	// -----------------------
+	// ---------------------------
 	
 	public static void setPeerPort(int port){
 		PEER_PORT = port;
