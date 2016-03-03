@@ -1,0 +1,10 @@
+Format des messages classiques: 
+	  message:hashCible:arg1:arg2
+	  	
+	  format message in:
+	  	in:hashDel'expéditeur:ipdel'expediteur
+	  		
+	  format message NiceToMeetYou:
+	  	NiceToMeetYou:x:y
+	  		- x-> hash du successeur de l'expediteur
+	  		- y -> ip du successeur de l'expediteur

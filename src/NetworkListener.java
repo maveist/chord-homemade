@@ -18,19 +18,6 @@ public class NetworkListener implements Runnable{
 	//TODO Finir cette méthode.
 	@Override
 	
-	
-	/*
-	  	Format des messages classiques: 
-	  	message:hashCible:arg1:arg2
-	  	
-	  	format message in:
-	  		in:hashDel'expéditeur:ipdel'expediteur
-	  		
-	  	format message NiceToMeetYou:
-	  		NiceToMeetYou:x:y
-	  			- x-> hash du successeur de l'expediteur
-	  			- y -> ip du successeur de l'expediteur
-	 */
 	public void run() {
 		while(true){
 			ServerSocket servSock = null;

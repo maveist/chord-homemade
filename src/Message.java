@@ -4,7 +4,8 @@ public enum Message {
        YOUR_SUCCESSOR("ys"),
 	   INSERT_NET("NiceToMeetYou"),
 	   CHANGE_PREC("changeprec"),
-	   ANS_INSERT_NET("MeToo");
+	   ANS_INSERT_NET("MeToo"),
+	   TELL_FINGER("finger");
 	   
 	   
 	   private String msg;
