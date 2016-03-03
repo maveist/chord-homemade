@@ -31,7 +31,10 @@ public class NetworkListener implements Runnable{
 				Socket sock = servSock.accept();
 				InputStream input = sock.getInputStream();
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
-				String[] msg = read.readLine().split(":");
+				String bufmsg = read.readLine();
+				System.out.println(bufmsg);
+				String[] msg = bufmsg.split(":");
+			
 				if(msg[0].equals(Message.SIZE_NET.toString())){
 					forwardSize(msg);
 				}
@@ -43,6 +46,9 @@ public class NetworkListener implements Runnable{
 							break;
 						case "NiceToMeetYou":
 							niceToMeetYou(msg);
+							break;
+						case "yaf":
+							this.pair.changeSuccesseur(this.pair.getIp(), this.pair.getHash());
 							break;
 					}
 				}else{

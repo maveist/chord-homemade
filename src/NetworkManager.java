@@ -15,7 +15,7 @@ public class NetworkManager {
 	private static String hashServerIp;
 	private static int hashServerPort;
 		
-	public static int PEER_PORT = 8000;
+	public static int PEER_PORT = 8005;
 	
 	
 	
@@ -62,38 +62,44 @@ public class NetworkManager {
 				PrintWriter sortie;
 				OutputStream output;
 				try {
+					System.out.println("Connexion au WelcomeServer...");
 					sock = new Socket(ipWelcome, portWelcome);
 					OutputStream outToWelcome = sock.getOutputStream();
 					InputStream inWelcome = sock.getInputStream();
-					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
-					toWelcome.print("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
-					
+					PrintWriter toWelcome = new PrintWriter(outToWelcome);
+					toWelcome.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
+					System.out.println("Attente de réponse du serveur");
 					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
 					strIn = readWelcome.readLine();
+					System.out.println(strIn);
+					System.out.println("Réponse ok.");
 					ipToContact = strIn;
 					sock.close();
+					
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
+				if(!ipToContact.equals("yaf")){
 				// Communication avec l'ip d'entrée donnée par WelcomeServer
-				try {
-					sock = new Socket(ipToContact, PEER_PORT);
-					output = sock.getOutputStream();
-					String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
-					sortie = new PrintWriter(output , true );
-					sortie.println(str);
-					sortie.close();
-					output.close();
-				} catch (UnknownHostException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					try {
+						sock = new Socket(ipToContact, PEER_PORT);
+						output = sock.getOutputStream();
+						String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
+						sortie = new PrintWriter(output , true );
+						sortie.println(str);
+						sortie.close();
+						output.close();
+					} catch (UnknownHostException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
 				
 				//La méthode se termine, on créée un thread pour écouter les messages 
 				//et ainsi avoir des réponses pour avoir le successeur.
+				System.out.println("Connexion ok.");
 				NetworkListener nl = new NetworkListener(pair);
 				Thread netListener = new Thread(nl);
 				netListener.start();
