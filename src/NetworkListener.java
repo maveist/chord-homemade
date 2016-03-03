@@ -8,10 +8,10 @@ import java.net.Socket;
 
 
 public class NetworkListener implements Runnable{
-	private NetworkManager netManager;
+	private Peer pair;
 	
-	public NetworkListener(NetworkManager net){
-		this.netManager = net;
+	public NetworkListener(Peer p){
+		this.pair = p;
 	}
 	
 	
@@ -33,7 +33,7 @@ public class NetworkListener implements Runnable{
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
 				String[] msg = read.readLine().split(":");
 				int hashCible = Integer.parseInt(msg[1]);
-				if(hashCible == this.netManager.getHash()){
+				if(hashCible == this.pair.getHash()){
 					switch(msg[0]){
 						case "in":
 							in(msg);
@@ -57,7 +57,7 @@ public class NetworkListener implements Runnable{
 		for(int i = 1 ; i < msg.length; i++){
 			str = str+":"+msg[i];
 		}
-		this.netManager.sendMessage(str);
+		NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
 	}
 	
 	public void in(String[] msg){
@@ -66,7 +66,7 @@ public class NetworkListener implements Runnable{
 		int hashSucc = this.netManager.getNextHash();
 		if(hash < hashSucc){
 			try {
-				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.netManager.getNextHash())+":"+this.netManager.getIpNext();
+				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.netManager.getIpNext();
 				Socket sock = this.netManager.getSockNext();
 				PrintWriter pw = new PrintWriter(sock.getOutputStream());
 				pw.println(str);

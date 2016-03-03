@@ -1,7 +1,6 @@
 
 
 import java.io.BufferedReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,19 +10,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class NetworkManager {
+	// Hash server infos
+	private static String hashServerIp;
+	private static int hashServerPort;
+		
 	public static int PEER_PORT = 8000;
 	
-	private int hashNext;
-	private String ipNext;
-	private Socket sockNext;
-	
-
-	private Socket socket;
-	private InputStream input;
-	private OutputStream output;
-	
-	private String myip;
-	private int myHash;
 	
 	private Thread netListener;
 	
@@ -34,7 +26,9 @@ public class NetworkManager {
 		un socket parleur (predecesseur)
 		HashMap de socket (fingers)
 	*/
-	/*public NetworkManager(String ip, String ipSucc, int hash){
+/*
+	public NetworkManager(String ip, String ipSucc, int hash){		
+
 		this.myHash = hash;
 		this.myip = ip;
 		this.ipNext = ipSucc;
@@ -54,7 +48,42 @@ public class NetworkManager {
 	
 
 	
-	public static void getInNetwork(String ipWelcome, int portWelcome){
+	// -----------------------
+	// GESTION DU HASH DU PAIR
+	// -----------------------
+	
+	public static void setPeerPort(int port){
+		PEER_PORT = port;
+	}
+	
+	public static void setHashServerIp(String ip){
+		NetworkManager.hashServerIp = ip;
+	}
+	
+	public static void setHashServerPort(int port){
+		NetworkManager.hashServerPort = port;
+	}
+	
+	public static int getHashFromServer(String peerIp){
+		try {
+			// Création du canal de communication
+			Socket hashSock;
+			hashSock = new Socket(NetworkManager.hashServerIp, NetworkManager.hashServerPort);
+			InputStream fluxEntree = hashSock.getInputStream();
+			OutputStream fluxSortie = hashSock.getOutputStream();
+			BufferedReader entree = new BufferedReader(new InputStreamReader(fluxEntree));
+			PrintWriter sortie = new PrintWriter(fluxSortie, true);
+			
+			// Récupération du hash via le canal et renvoi
+			sortie.println(peerIp);
+			String hash = entree.readLine();
+			return Integer.parseInt(hash);
+		} catch (IOException e) {
+			return -1;
+		}
+	}
+	
+	public void getInNetwork(String ipWelcome, int portWelcome, Peer pair){
 		//Communication avec le WelcomeServeur
 				Socket sock;
 				String ipToContact = "";
@@ -66,7 +95,7 @@ public class NetworkManager {
 					OutputStream outToWelcome = sock.getOutputStream();
 					InputStream inWelcome = sock.getInputStream();
 					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
-					toWelcome.print("yo:"+Integer.toString(this.myHash)+":"+this.myip);
+					toWelcome.print("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp);
 					
 					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
 					strIn = readWelcome.readLine();
@@ -81,8 +110,8 @@ public class NetworkManager {
 				try {
 					sock = new Socket(ipToContact, PEER_PORT);
 					output = sock.getOutputStream();
-					String str = "in:"+Integer.toString(this.myHash)+":"+this.myip;
-					sortie = new PrintWriter(output , true ) ;
+					String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
+					sortie = new PrintWriter(output , true );
 					sortie.println(str);
 					sortie.close();
 					output.close();
@@ -101,25 +130,12 @@ public class NetworkManager {
 	}
 	
 	
-	//Cette méthode envoie un msg à son successeur lorsqu'il y a insertion de machine
-	public static changeSucc(String ip, int hash){
-		try {
-			String str = Message.CHANGE_PREC.toString() + ":" + hash +":"+ ip;
-			PrintWriter pw = new PrintWriter(this.sockNext.getOutputStream());
-			pw.close();
-			this.sockNext.close();
-			this.sockNext = new Socket(ip, PEER_PORT);
-			this.hashNext = hash;
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-		
-	}
+	
 		
 	public static void sendMessage(String msg, String ip){
 		try {
-			OutputStream output = this.sockNext.getOutputStream();
+			Socket sock = new Socket(ip, PEER_PORT);
+			OutputStream output = sock.getOutputStream();
 			PrintWriter pw = new PrintWriter(output);
 			pw.println(msg);
 			pw.close();
