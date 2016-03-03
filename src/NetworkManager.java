@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -16,8 +17,6 @@ public class NetworkManager {
 		
 	public static int PEER_PORT = 8000;
 	
-	
-	private Thread netListener;
 	
 	
 	// ---------------------------
@@ -55,7 +54,7 @@ public class NetworkManager {
 		}
 	}
 	
-	public void getInNetwork(String ipWelcome, int portWelcome, Peer pair){
+	public static void getInNetwork(String ipWelcome, int portWelcome, Peer pair){
 		//Communication avec le WelcomeServeur
 				Socket sock;
 				String ipToContact = "";
@@ -96,8 +95,8 @@ public class NetworkManager {
 				//La méthode se termine, on créée un thread pour écouter les messages 
 				//et ainsi avoir des réponses pour avoir le successeur.
 				NetworkListener nl = new NetworkListener(pair);
-				this.netListener = new Thread(nl);
-				this.netListener.start();
+				Thread netListener = new Thread(nl);
+				netListener.start();
 				
 	}
 	
@@ -113,10 +112,34 @@ public class NetworkManager {
 			pw.close();
 			output.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
+	
+	//TODO à tester si le NetworkListener ne prend pas le dessus lors de la réception du message.
+	public static int sizeOfNetwork(int myHash, String ipSuccesseur){
+		int size = -1;
+		try {
+			Socket sock = new Socket(ipSuccesseur, PEER_PORT);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			String str = Message.SIZE_NET.toString()+":"+ Integer.toString(myHash);
+			pw.println(str);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try{
+			ServerSocket sockListen = new ServerSocket(NetworkManager.PEER_PORT);
+			Socket sock = sockListen.accept();
+			InputStream input = sock.getInputStream();
+			BufferedReader read = new BufferedReader(new InputStreamReader(input));
+			String[] received = read.readLine().split(":");
+			size = Integer.parseInt(received[2]); //received[2] => endroit où se trouve le nb de jump du message.
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		return size;
+	}
 }

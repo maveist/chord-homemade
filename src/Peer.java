@@ -30,7 +30,7 @@ public class Peer {
 		this.ipSuccesseur = ip;
 		this.hashSuccesseur = hash;
 	}
-
+	
 	public String getIp() {
 		return ip;
 	}
@@ -86,23 +86,35 @@ public class Peer {
 		return hash;
 	}
 	
-	/*public int getClosestFinger(int seekedHash){
-		int moduloHashSucesseur = hashSuccesseur;
+	public int getClosestFinger(int seekedHash){
 		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
+		int finalHash = -1;
+		seekedHash = this.hashModulo(this.hash, seekedHash, networkSize);
 		
+		// On parcours les finger (on prend le soins de réajuster les hash avec le modulo).
 		for(int fingerHash : this.fingers.keySet()){
+			fingerHash = this.hashModulo(this.hash, fingerHash, networkSize);
 			
 			if(fingerHash < seekedHash)
-				hash = fingerHash;
-			
-				
+				finalHash = fingerHash;
+			else
+				break;
 		}
-		
-		
-		return hash;
+				
+		return this.hashModuloInverse(this.hash, finalHash, networkSize);
+	}
+
+	private int hashModulo(int hashDepart, int hashCourant, int networkSize){
+		if(hashCourant < hashDepart)
+			return (networkSize % hashDepart) + (hashCourant%hashDepart);
+		else
+			return (hashCourant%hashDepart);
 	}
 	
-	private int hashModulo(int hashDepart, int hashCourant, int networkSize){
-		return (networkSize % hashDepart) + 
-	}*/
+	private int hashModuloInverse(int hashDepart, int hashModulo, int networkSize){
+		if(hashModulo > (networkSize % hashDepart))
+			return hashModulo - (networkSize % hashDepart);
+		else
+			return hashDepart + hashModulo;
+	}
 }

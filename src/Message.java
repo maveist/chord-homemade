@@ -3,9 +3,10 @@ public enum Message {
 	   IN("in"),
        YOUR_SUCCESSOR("ys"),
 	   INSERT_NET("NiceToMeetYou"),
-	   CHANGE_PREC("changeprec"),
 	   ANS_INSERT_NET("MeToo"),
-	   TELL_FINGER("finger");
+	   TELL_FINGER("finger"),
+	   ANS_FINGER("imyourfinger"),
+	   SIZE_NET("size");
 	   
 	   
 	   private String msg;

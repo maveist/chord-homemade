@@ -8,3 +8,20 @@ Format des messages classiques:
 	  	NiceToMeetYou:x:y
 	  		- x-> hash du successeur de l'expediteur
 	  		- y -> ip du successeur de l'expediteur
+
+	  format message pour trouver des fingers:
+		fingers:x:y:z
+			- x -> hash de l'expediteur
+			- y -> ip de l'expediteur
+			- z -> Jump to live
+
+	
+	  format message pour répondre au chercheur de finger:
+		imyourfinger:x:y
+			- x -> hash de l'expediteur
+			- y -> ip de l'expediteur
+	
+	  format message pour savoir la taille du réseau
+		size:x:y
+			-x -> hash de l'expediteur
+			-y -> nombre de saut (qui est incrémenter à chaque saut) 

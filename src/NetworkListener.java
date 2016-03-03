@@ -32,6 +32,9 @@ public class NetworkListener implements Runnable{
 				InputStream input = sock.getInputStream();
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
 				String[] msg = read.readLine().split(":");
+				if(msg[0].equals(Message.SIZE_NET.toString())){
+					forwardSize(msg);
+				}
 				int hashCible = Integer.parseInt(msg[1]);
 				if(hashCible == this.pair.getHash()){
 					switch(msg[0]){
@@ -50,6 +53,12 @@ public class NetworkListener implements Runnable{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void forwardSize(String[] msg){
+		int currentSize = Integer.parseInt(msg[2]);
+		String str = msg[0]+":"+msg[1]+":"+Integer.toString(currentSize);
+		NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
 	}
 	
 	public void forwardMessage(String[] msg){
