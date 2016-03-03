@@ -36,7 +36,7 @@ public class Peer {
 		this.ipSuccesseur = ip;
 		this.hashSuccesseur = hash;
 	}
-
+	
 	public String getIp() {
 		return ip;
 	}
