@@ -63,24 +63,25 @@ public class NetworkListener implements Runnable{
 	public void in(String[] msg){
 		String str ="";
 		int hash = Integer.parseInt(msg[1]);
-		int hashSucc = this.netManager.getNextHash();
+		int hashSucc = this.pair.getHashSuccesseur();
 		if(hash < hashSucc){
 			try {
-				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.netManager.getIpNext();
-				Socket sock = this.netManager.getSockNext();
+				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
+				Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
 				PrintWriter pw = new PrintWriter(sock.getOutputStream());
 				pw.println(str);
 				pw.close();
+				sock.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		this.netManager.changeSucc(msg[2], Integer.parseInt(msg[1]));
+		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}
 	
 	public void niceToMeetYou(String[] msg){
-		this.netManager.changeSucc(msg[1], Integer.parseInt(msg[2]));
+		this.pair.changeSuccesseur(msg[1], Integer.parseInt(msg[2]));
 	}
 
 }

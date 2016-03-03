@@ -95,7 +95,7 @@ public class NetworkManager {
 					OutputStream outToWelcome = sock.getOutputStream();
 					InputStream inWelcome = sock.getInputStream();
 					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
-					toWelcome.print("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp);
+					toWelcome.print("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
 					
 					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
 					strIn = readWelcome.readLine();
@@ -123,7 +123,7 @@ public class NetworkManager {
 				
 				//La méthode se termine, on créée un thread pour écouter les messages 
 				//et ainsi avoir des réponses pour avoir le successeur.
-				NetworkListener nl = new NetworkListener(this);
+				NetworkListener nl = new NetworkListener(pair);
 				this.netListener = new Thread(nl);
 				this.netListener.start();
 				
