@@ -12,38 +12,19 @@ import java.net.UnknownHostException;
 
 
 public class Peer {
-	private static String hashServerIp;
-	private static int hashServerPort;
-	private String Ip;
-	private String hash;
+	private String ip;
+	private int hash;
 	
 	public Peer(){
+		// Récupération de l'IP puis du Hash
 		try {
-			// Récupération de l'IP puis du Hash
-			this.Ip = InetAddress.getLocalHost().getHostAddress();
+			this.ip = InetAddress.getLocalHost().getHostAddress();
+			this.hash = NetworkManager.getHashFromServer(this.ip);
 			
-			// Temporaire - Récupération du hash
-			Socket hashSock = new Socket(Peer.hashServerIp, Peer.hashServerPort);
-			InputStream fluxEntree = hashSock.getInputStream();
-			OutputStream fluxSortie = hashSock.getOutputStream();
-			BufferedReader entree = new BufferedReader(new InputStreamReader(fluxEntree));
-			PrintWriter sortie = new PrintWriter(fluxSortie, true);
-			
-			sortie.println(this.Ip);
-			this.hash = entree.readLine();
-			System.out.println(this.hash);
+			System.out.print(this.ip + " => " + this.hash);
 		} catch (UnknownHostException e) {
-			System.out.println("Erreur de récupération de l'adresse IP.");
-		} catch (IOException e) {
-			System.out.println("Erreur de communication en entrée/sortie.");
+			System.out.println("Erreur dans la récupération de votre IP.");
 		}
-	}
-	
-	public static void setHashServerIp(String Ip){
-		Peer.hashServerIp = Ip;
-	}
-	
-	public static void setHashServerPort(int port){
-		Peer.hashServerPort = port;
+			
 	}
 }

@@ -1,7 +1,6 @@
 
 
 import java.io.BufferedReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +10,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class NetworkManager {
+	// Hash server infos
+	private static String hashServerIp;
+	private static int hashServerPort;
+	
 	public static int PEER_PORT = 8000;
 	
 	private int hashNext;
@@ -34,7 +37,7 @@ public class NetworkManager {
 		un socket parleur (predecesseur)
 		HashMap de socket (fingers)
 	*/
-	public NetworkManager(String ip, String ipSucc, int hash){
+	public NetworkManager(String ip, String ipSucc, int hash){		
 		this.myHash = hash;
 		this.myip = ip;
 		this.ipNext = ipSucc;
@@ -130,6 +133,38 @@ public class NetworkManager {
 		}
 	}*/
 	
+	
+	// -----------------------
+	// GESTION DU HASH DU PAIR
+	// -----------------------
+	
+	public static void setHashServerIp(String ip){
+		NetworkManager.hashServerIp = ip;
+	}
+	
+	public static void setHashServerPort(int port){
+		NetworkManager.hashServerPort = port;
+	}
+	
+	public static int getHashFromServer(String peerIp){
+		try {
+			// Création du canal de communication
+			Socket hashSock;
+			hashSock = new Socket(NetworkManager.hashServerIp, NetworkManager.hashServerPort);
+			InputStream fluxEntree = hashSock.getInputStream();
+			OutputStream fluxSortie = hashSock.getOutputStream();
+			BufferedReader entree = new BufferedReader(new InputStreamReader(fluxEntree));
+			PrintWriter sortie = new PrintWriter(fluxSortie, true);
+			
+			// Récupération du hash via le canal et renvoi
+			sortie.println(peerIp);
+			String hash = entree.readLine();
+			return Integer.parseInt(hash);
+		} catch (IOException e) {
+			return -1;
+		}
+	}
+	
 	public void getInNetwork(String ipWelcome, int portWelcome){
 		//Communication avec le WelcomeServeur
 				Socket sock;
@@ -158,7 +193,7 @@ public class NetworkManager {
 					sock = new Socket(ipToContact, PEER_PORT);
 					output = sock.getOutputStream();
 					String str = "in:"+Integer.toString(this.myHash)+":"+this.myip;
-					sortie = new PrintWriter(output , true ) ;
+					sortie = new PrintWriter(output , true );
 					sortie.println(str);
 					sortie.close();
 					output.close();
