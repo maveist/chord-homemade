@@ -25,7 +25,10 @@ public class Peer {
 		}
 	}
 	
-	
+	public void changeSuccesseur(String ip, int hash){
+		this.ipSuccesseur = ip;
+		this.hashSuccesseur = hash;
+	}
 
 	public String getIp() {
 		return ip;
@@ -58,4 +61,8 @@ public class Peer {
 	public void setIpSuccesseur(String ipSuccesseur) {
 		this.ipSuccesseur = ipSuccesseur;
 	}
+	
+	
+
+	
 }
