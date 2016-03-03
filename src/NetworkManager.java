@@ -134,9 +134,9 @@ public class NetworkManager {
 	}*/
 	
 	
-	// -----------------------
+	// ---------------------------
 	// GESTION DU HASH DU PAIR
-	// -----------------------
+	// ---------------------------
 	
 	public static void setHashServerIp(String ip){
 		NetworkManager.hashServerIp = ip;
