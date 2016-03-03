@@ -1,5 +1,7 @@
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Set;
 
 
 public class Peer {
@@ -7,11 +9,9 @@ public class Peer {
 	private int hash;
 	private int hashSuccesseur;
 	private String ipSuccesseur;
+	private HashMap<Integer, String> fingers;
 	
 	
-	/**
-	 * Constructeur d'un pair. Il s'occupe de récupérer l'IP puis le Hash depuis le Hash Server.
-	 */
 	public Peer(){
 		// Récupération de l'IP puis du Hash
 		try {
@@ -24,6 +24,7 @@ public class Peer {
 			System.out.println("Erreur dans la récupération de votre IP.");
 		}
 	}
+	
 	
 	public void changeSuccesseur(String ip, int hash){
 		this.ipSuccesseur = ip;
@@ -62,7 +63,46 @@ public class Peer {
 		this.ipSuccesseur = ipSuccesseur;
 	}
 	
+	public void addFinger(int hash, String ip){
+		this.fingers.put(hash, ip);
+	}
 	
-
+	public Set<Integer> getFingersHashes(){
+		return this.fingers.keySet();
+	}
 	
+	public String getFingerIp(int hash){
+		return this.fingers.get(hash);
+	}
+	
+	public int getFingerHash(String ip){
+		int hash = -1;
+		
+		for(int hashCourant : this.fingers.keySet()){
+			if(this.fingers.get(hashCourant) == ip)
+				hash = hashCourant;
+		}
+		
+		return hash;
+	}
+	
+	/*public int getClosestFinger(int seekedHash){
+		int moduloHashSucesseur = hashSuccesseur;
+		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
+		
+		for(int fingerHash : this.fingers.keySet()){
+			
+			if(fingerHash < seekedHash)
+				hash = fingerHash;
+			
+				
+		}
+		
+		
+		return hash;
+	}
+	
+	private int hashModulo(int hashDepart, int hashCourant, int networkSize){
+		return (networkSize % hashDepart) + 
+	}*/
 }
