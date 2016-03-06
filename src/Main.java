@@ -24,7 +24,7 @@ public class Main {
 		NetworkManager.setHashServerPort(8001);
 		Peer monPair = new Peer();
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
-		NetworkManager.getInNetwork(monPair.getIp(), portWelcome, monPair);
+		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 	}
 
 }
