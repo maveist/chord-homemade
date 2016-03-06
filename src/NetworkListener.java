@@ -83,7 +83,7 @@ public class NetworkListener implements Runnable{
 			try {
 				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
 				Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
-				PrintWriter pw = new PrintWriter(sock.getOutputStream());
+				PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 				pw.println(str);
 				pw.close();
 				sock.close();
@@ -91,6 +91,8 @@ public class NetworkListener implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else{
+			forwardMessage(msg);
 		}
 		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}

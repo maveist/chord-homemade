@@ -87,7 +87,7 @@ public class NetworkManager {
 						sock = new Socket(ipToContact, PEER_PORT);
 						output = sock.getOutputStream();
 						String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
-						sortie = new PrintWriter(output , true );
+						sortie = new PrintWriter(output , true);
 						sortie.println(str);
 						sortie.close();
 						output.close();
@@ -96,6 +96,9 @@ public class NetworkManager {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
+				}else{
+					pair.setIpSuccesseur(pair.getIp());
+					pair.setHashSuccesseur(pair.getHashSuccesseur());
 				}
 				
 				//La méthode se termine, on créée un thread pour écouter les messages 
@@ -114,7 +117,7 @@ public class NetworkManager {
 		try {
 			Socket sock = new Socket(ip, PEER_PORT);
 			OutputStream output = sock.getOutputStream();
-			PrintWriter pw = new PrintWriter(output);
+			PrintWriter pw = new PrintWriter(output, true);
 			pw.println(msg);
 			pw.close();
 			output.close();
