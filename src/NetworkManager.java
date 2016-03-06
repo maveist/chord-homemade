@@ -65,11 +65,12 @@ public class NetworkManager {
 					System.out.println("Connexion au WelcomeServer...");
 					sock = new Socket(ipWelcome, portWelcome);
 					OutputStream outToWelcome = sock.getOutputStream();
-					InputStream inWelcome = sock.getInputStream();
-					PrintWriter toWelcome = new PrintWriter(outToWelcome);
-					toWelcome.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
+					//InputStream inWelcome = sock.getInputStream();
+					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
+					System.out.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
+					toWelcome.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp()+"\n");
 					System.out.println("Attente de réponse du serveur");
-					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
+					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 					strIn = readWelcome.readLine();
 					System.out.println(strIn);
 					System.out.println("Réponse ok.");

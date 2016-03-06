@@ -19,7 +19,7 @@ public class Peer {
 			this.hash = NetworkManager.getHashFromServer(this.ip);
 			
 			
-			System.out.print(this.ip + " => " + this.hash);
+			System.out.println(this.ip + " => " + this.hash);
 		} catch (UnknownHostException e) {
 			System.out.println("Erreur dans la récupération de votre IP.");
 		}
