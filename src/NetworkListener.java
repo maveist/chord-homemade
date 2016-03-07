@@ -32,6 +32,7 @@ public class NetworkListener implements Runnable{
 				InputStream input = sock.getInputStream();
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
 				String bufmsg = read.readLine();
+				sock.close();
 				System.out.println(bufmsg);
 				String[] msg = bufmsg.split(":");
 			

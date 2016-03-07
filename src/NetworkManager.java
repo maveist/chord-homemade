@@ -101,7 +101,7 @@ public class NetworkManager {
 					pair.setHashSuccesseur(pair.getHashSuccesseur());
 				}
 				
-				//La méthode se termine, on créée un thread pour écouter les messages 
+				//La méthode se termine, on créée un thread pour écouter les messages sur le réseau
 				//et ainsi avoir des réponses pour avoir le successeur.
 				System.out.println("Connexion ok.");
 				NetworkListener nl = new NetworkListener(pair);
@@ -114,17 +114,8 @@ public class NetworkManager {
 	
 		
 	public static void sendMessage(String msg, String ip){
-		try {
-			Socket sock = new Socket(ip, PEER_PORT);
-			OutputStream output = sock.getOutputStream();
-			PrintWriter pw = new PrintWriter(output, true);
-			pw.println(msg);
-			pw.close();
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		Thread th = new Thread(new NetworkSpeaker(msg, ip));
+		th.run();	
 	}
 	
 	
