@@ -1,5 +1,6 @@
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -86,6 +87,24 @@ public class Peer {
 		return hash;
 	}
 	
+	public ArrayList<String> getRouteTable(){
+		ArrayList<String> rt = new ArrayList<>();
+		String myHashString =Integer.toString(this.hash);
+		String tmp = myHashString +":"+Integer.toString(this.hashSuccesseur)+":"+this.ipSuccesseur;
+		rt.add(tmp);
+		if(this.fingers != null && !this.fingers.isEmpty()){
+			for(int hashS : this.fingers.keySet()){
+				String ipS = this.fingers.get(hashS);
+				tmp = myHashString+":"+Integer.toString(hashS)+":"+ipS;
+				rt.add(tmp);
+			}
+			
+		}	
+		rt.add("end");
+		return rt;
+	}
+	
+	
 	public int getClosestFinger(int seekedHash){
 		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
 		int finalHash = -1;
@@ -117,4 +136,5 @@ public class Peer {
 		else
 			return hashDepart + hashModulo;
 	}
+	
 }

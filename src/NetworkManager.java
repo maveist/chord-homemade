@@ -9,14 +9,17 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class NetworkManager {
 	// Hash server infos
 	private static String hashServerIp;
 	private static int hashServerPort;
-		
-	public static int PEER_PORT = 8005;
+	public static String MONITOR_IP;	
 	
+	
+	public static int PEER_PORT = 8005;
+	public static int MONITOR_PORT = 8002;
 	
 	
 	// ---------------------------
@@ -33,6 +36,11 @@ public class NetworkManager {
 	
 	public static void setHashServerPort(int port){
 		NetworkManager.hashServerPort = port;
+	}
+	
+	public static void setMonitor(String ip, int port){
+		MONITOR_IP = ip;
+		MONITOR_PORT = port;
 	}
 	
 	public static int getHashFromServer(String peerIp){
@@ -115,9 +123,9 @@ public class NetworkManager {
 	
 		
 	public static void sendMessage(String msg, String ip){
-		/*Thread th = new Thread(new NetworkSpeaker(msg, ip));
-		th.run();*/
-		try {
+		Thread th = new Thread(new NetworkSpeaker(msg, ip));
+		th.run();
+		/*try {
 			Socket sock = new Socket(ip, PEER_PORT);
 			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			pw.println(msg);
@@ -128,9 +136,19 @@ public class NetworkManager {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		
+	}
+	
+	public static void sendMessage(ArrayList<String> msgs, String ip){
+		Thread th = new Thread(new NetworkSpeaker(msgs, ip));
+		th.run();
+	}
+	
+	public static void sendMessage(ArrayList<String> msgs, String ip, Socket sock){
+		Thread th = new Thread(new NetworkSpeaker(msgs,ip,sock));
+		th.run();
 	}
 	
 	
