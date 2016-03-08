@@ -26,7 +26,9 @@ Format des messages classiques:
 			-x -> hash de l'expediteur
 			-y -> nombre de saut (qui est incrémenter à chaque saut) 
 			
-			
+	  format message pour envoyer un message (exemple un txt)
+	  		msg:x:txt
+	  			->x :hash destinataire
 
 Format de message destinée à MonitorServer:
 	

@@ -116,6 +116,8 @@ public class NetworkManager {
 				NetworkListener nl = new NetworkListener(pair);
 				Thread netListener = new Thread(nl);
 				netListener.start();
+				Thread thMonitor = new Thread(new MonitorListener(pair));
+				thMonitor.run();
 				
 	}
 	

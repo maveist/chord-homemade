@@ -26,6 +26,7 @@ public class Main {
 		Peer monPair = new Peer();
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
+		Thread thEntree = new Thread(new EntreeThread(monPair));
 	}
 
 }
