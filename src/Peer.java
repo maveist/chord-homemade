@@ -105,6 +105,12 @@ public class Peer {
 	}
 	
 	
+	public void setFinger(){
+		int size = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
+		System.out.println(size);
+	}
+	
+	
 	public int getClosestFinger(int seekedHash){
 		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
 		int finalHash = -1;

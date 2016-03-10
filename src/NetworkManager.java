@@ -118,6 +118,7 @@ public class NetworkManager {
 				netListener.start();
 				Thread thMonitor = new Thread(new MonitorListener(pair));
 				thMonitor.run();
+				pair.setFinger();
 				
 	}
 	
@@ -127,19 +128,6 @@ public class NetworkManager {
 	public static void sendMessage(String msg, String ip){
 		Thread th = new Thread(new NetworkSpeaker(msg, ip));
 		th.run();
-		/*try {
-			Socket sock = new Socket(ip, PEER_PORT);
-			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
-			pw.println(msg);
-			sock.close();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
 		
 	}
 	
