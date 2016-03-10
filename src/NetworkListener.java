@@ -82,7 +82,9 @@ public class NetworkListener implements Runnable{
 		if(this.pair.getIp().equals(this.pair.getIpSuccesseur())){
 			this.pair.changeSuccesseur(msg[2], hash);
 		}else{
-			if(hash < hashSucc){
+			int hashTmp = Peer.hashModulo(this.pair.getHash(), hash, 100);
+			int hashSuccTmp = Peer.hashModulo(this.pair.getHash(), hashSucc, 100);
+			if(hashTmp < hashSuccTmp){
 				//try {
 					str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
 					/*Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);

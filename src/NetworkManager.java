@@ -126,19 +126,58 @@ public class NetworkManager {
 	
 		
 	public static void sendMessage(String msg, String ip){
-		Thread th = new Thread(new NetworkSpeaker(msg, ip));
-		th.run();
-		
+		/*Thread th = new Thread(new NetworkSpeaker(msg, ip));
+		th.run();*/
+		try {
+			Socket sock = new Socket(ip, PEER_PORT);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			pw.println(msg);
+			sock.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void sendMessage(ArrayList<String> msgs, String ip){
-		Thread th = new Thread(new NetworkSpeaker(msgs, ip));
-		th.run();
+		/*read th = new Thread(new NetworkSpeaker(msgs, ip));
+		th.run();*/
+		try {
+			Socket sock = new Socket(ip, PEER_PORT);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			for(String msg : msgs){
+				pw.println(msg);
+			}
+			sock.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void sendMessage(ArrayList<String> msgs, String ip, Socket sock){
-		Thread th = new Thread(new NetworkSpeaker(msgs,ip,sock));
-		th.run();
+		/*Thread th = new Thread(new NetworkSpeaker(msgs,ip,sock));
+		th.run();*/
+		try {
+			sock = new Socket(ip, PEER_PORT);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			for(String msg : msgs){
+				pw.println(msg);
+			}
+			sock.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
