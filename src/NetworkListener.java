@@ -34,9 +34,9 @@ public class NetworkListener implements Runnable{
 				System.out.println(bufmsg);
 				String[] msg = bufmsg.split(":");
 			
-				if(msg[0].equals(Message.SIZE_NET.toString())){
+				/*if(msg[0].equals(Message.SIZE_NET.toString())){
 					forwardSize(msg);
-				}
+				}*/
 				int hashCible = Integer.parseInt(msg[1]);
 				
 					switch(msg[0]){

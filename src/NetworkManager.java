@@ -118,7 +118,7 @@ public class NetworkManager {
 				netListener.start();
 				Thread thMonitor = new Thread(new MonitorListener(pair));
 				thMonitor.run();
-				pair.setFinger();
+				//pair.setFinger();
 				
 	}
 	
