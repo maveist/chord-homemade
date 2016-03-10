@@ -83,18 +83,19 @@ public class NetworkListener implements Runnable{
 			this.pair.changeSuccesseur(msg[2], hash);
 		}else{
 			if(hash < hashSucc){
-				try {
+				//try {
 					str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
-					Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
+					/*Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
 					PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 					pw.println(str);
 					pw.close();
-					sock.close();
+					sock.close();*/
+					NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
 					this.pair.changeSuccesseur(msg[2], hash);
-				} catch (IOException e) {
+				/*} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 			}else{
 				forwardMessage(msg);
 			}
