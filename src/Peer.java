@@ -114,29 +114,29 @@ public class Peer {
 	public int getClosestFinger(int seekedHash){
 		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
 		int finalHash = -1;
-		seekedHash = this.hashModulo(this.hash, seekedHash, networkSize);
+		seekedHash = Peer.hashModulo(this.hash, seekedHash, networkSize);
 		
 		// On parcours les finger (on prend le soins de réajuster les hash avec le modulo).
 		for(int fingerHash : this.fingers.keySet()){
-			fingerHash = this.hashModulo(this.hash, fingerHash, networkSize);
-			
+			fingerHash = Peer.hashModulo(this.hash, fingerHash, networkSize);
+
 			if(fingerHash < seekedHash)
 				finalHash = fingerHash;
 			else
 				break;
 		}
 				
-		return this.hashModuloInverse(this.hash, finalHash, networkSize);
+		return Peer.hashModuloInverse(this.hash, finalHash, networkSize);
 	}
 
-	private int hashModulo(int hashDepart, int hashCourant, int networkSize){
+	public static int hashModulo(int hashDepart, int hashCourant, int networkSize){
 		if(hashCourant < hashDepart)
 			return (networkSize % hashDepart) + (hashCourant%hashDepart);
 		else
 			return (hashCourant%hashDepart);
 	}
 	
-	private int hashModuloInverse(int hashDepart, int hashModulo, int networkSize){
+	public static int hashModuloInverse(int hashDepart, int hashModulo, int networkSize){
 		if(hashModulo > (networkSize % hashDepart))
 			return hashModulo - (networkSize % hashDepart);
 		else
