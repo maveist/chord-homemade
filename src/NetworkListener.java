@@ -110,7 +110,7 @@ public class NetworkListener implements Runnable{
 	}
 	
 	public void niceToMeetYou(String[] msg){
-		this.pair.changeSuccesseur(msg[1], Integer.parseInt(msg[2]));
+		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}
 
 }
