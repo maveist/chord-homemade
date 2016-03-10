@@ -189,6 +189,7 @@ public class NetworkManager {
 			PrintWriter pw = new PrintWriter(sock.getOutputStream());
 			String str = Message.SIZE_NET.toString()+":"+ Integer.toString(myHash);
 			pw.println(str);
+			sock.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -200,6 +201,7 @@ public class NetworkManager {
 			BufferedReader read = new BufferedReader(new InputStreamReader(input));
 			String[] received = read.readLine().split(":");
 			size = Integer.parseInt(received[2]); //received[2] => endroit où se trouve le nb de jump du message.
+			sockListen.close();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
