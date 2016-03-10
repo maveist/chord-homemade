@@ -15,19 +15,13 @@ public class NetworkListener implements Runnable{
 	}
 	
 	
-	//TODO Finir cette méthode.
 	@Override
-	
 	public void run() {
-		
-		
 		while(true){
 			ServerSocket servSock = null;
 			try {
 				servSock = new ServerSocket(NetworkManager.PEER_PORT);
-				
 			} catch (IOException e) {
-
 				e.printStackTrace();
 			}
 			try {
