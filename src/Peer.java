@@ -94,7 +94,7 @@ public class Peer {
 		// On parcours les finger (on prend le soins de réajuster les hash avec le modulo).
 		for(int fingerHash : this.fingers.keySet()){
 			fingerHash = this.hashModulo(this.hash, fingerHash, networkSize);
-			
+
 			if(fingerHash < seekedHash)
 				finalHash = fingerHash;
 			else
