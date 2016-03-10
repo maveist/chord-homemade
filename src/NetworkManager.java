@@ -9,14 +9,17 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class NetworkManager {
 	// Hash server infos
 	private static String hashServerIp;
 	private static int hashServerPort;
-		
-	public static int PEER_PORT = 8000;
+	public static String MONITOR_IP;	
 	
+	
+	public static int PEER_PORT = 8005;
+	public static int MONITOR_PORT = 8002;
 	
 	
 	// ---------------------------
@@ -33,6 +36,11 @@ public class NetworkManager {
 	
 	public static void setHashServerPort(int port){
 		NetworkManager.hashServerPort = port;
+	}
+	
+	public static void setMonitor(String ip, int port){
+		MONITOR_IP = ip;
+		MONITOR_PORT = port;
 	}
 	
 	public static int getHashFromServer(String peerIp){
@@ -62,41 +70,54 @@ public class NetworkManager {
 				PrintWriter sortie;
 				OutputStream output;
 				try {
+					System.out.println("Connexion au WelcomeServer...");
 					sock = new Socket(ipWelcome, portWelcome);
 					OutputStream outToWelcome = sock.getOutputStream();
-					InputStream inWelcome = sock.getInputStream();
+					//InputStream inWelcome = sock.getInputStream();
 					PrintWriter toWelcome = new PrintWriter(outToWelcome, true);
-					toWelcome.print("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
-					
-					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(inWelcome));
+					System.out.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp());
+					toWelcome.println("yo:"+Integer.toString(pair.getHash())+":"+pair.getIp()+"\n");
+					System.out.println("Attente de réponse du serveur");
+					BufferedReader readWelcome = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 					strIn = readWelcome.readLine();
+					System.out.println(strIn);
+					System.out.println("Réponse ok.");
 					ipToContact = strIn;
 					sock.close();
 					
+					
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
+				if(!ipToContact.equals("yaf")){
 				// Communication avec l'ip d'entrée donnée par WelcomeServer
-				try {
-					sock = new Socket(ipToContact, PEER_PORT);
-					output = sock.getOutputStream();
-					String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
-					sortie = new PrintWriter(output , true );
-					sortie.println(str);
-					sortie.close();
-					output.close();
-				} catch (UnknownHostException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					try {
+						sock = new Socket(ipToContact, PEER_PORT);
+						output = sock.getOutputStream();
+						String str = "in:"+Integer.toString(pair.getHash())+":"+pair.getIp();
+						sortie = new PrintWriter(output , true);
+						sortie.println(str);
+						sortie.close();
+						output.close();
+						sock.close();
+					} catch (UnknownHostException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}else{
+					pair.setIpSuccesseur(pair.getIp());
+					pair.setHashSuccesseur(pair.getHashSuccesseur());
 				}
 				
-				//La méthode se termine, on créée un thread pour écouter les messages 
+				//La méthode se termine, on créée un thread pour écouter les messages sur le réseau
 				//et ainsi avoir des réponses pour avoir le successeur.
+				System.out.println("Connexion ok.");
 				NetworkListener nl = new NetworkListener(pair);
 				Thread netListener = new Thread(nl);
 				netListener.start();
+				Thread thMonitor = new Thread(new MonitorListener(pair));
+				thMonitor.run();
 				
 	}
 	
@@ -104,17 +125,32 @@ public class NetworkManager {
 	
 		
 	public static void sendMessage(String msg, String ip){
-		try {
+		Thread th = new Thread(new NetworkSpeaker(msg, ip));
+		th.run();
+		/*try {
 			Socket sock = new Socket(ip, PEER_PORT);
-			OutputStream output = sock.getOutputStream();
-			PrintWriter pw = new PrintWriter(output);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			pw.println(msg);
-			pw.close();
-			output.close();
-		} catch (IOException e) {
+			sock.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
+		
+	}
+	
+	public static void sendMessage(ArrayList<String> msgs, String ip){
+		Thread th = new Thread(new NetworkSpeaker(msgs, ip));
+		th.run();
+	}
+	
+	public static void sendMessage(ArrayList<String> msgs, String ip, Socket sock){
+		Thread th = new Thread(new NetworkSpeaker(msgs,ip,sock));
+		th.run();
 	}
 	
 	

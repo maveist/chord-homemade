@@ -6,7 +6,8 @@ public enum Message {
 	   ANS_INSERT_NET("MeToo"),
 	   TELL_FINGER("finger"),
 	   ANS_FINGER("imyourfinger"),
-	   SIZE_NET("size");
+	   SIZE_NET("size"),
+	   MESSAGE("msg");
 	   
 	   
 	   private String msg;

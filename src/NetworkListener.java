@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class NetworkListener implements Runnable{
 	private Peer pair;
-	
+
 	public NetworkListener(Peer p){
 		this.pair = p;
 	}
@@ -19,40 +19,51 @@ public class NetworkListener implements Runnable{
 	@Override
 	
 	public void run() {
+		
+		
 		while(true){
 			ServerSocket servSock = null;
 			try {
 				servSock = new ServerSocket(NetworkManager.PEER_PORT);
+				
 			} catch (IOException e) {
-	
+
 				e.printStackTrace();
 			}
 			try {
 				Socket sock = servSock.accept();
 				InputStream input = sock.getInputStream();
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
-				String[] msg = read.readLine().split(":");
+				String bufmsg = read.readLine();
+				sock.close();
+				servSock.close();
+				System.out.println(bufmsg);
+				String[] msg = bufmsg.split(":");
+			
 				if(msg[0].equals(Message.SIZE_NET.toString())){
 					forwardSize(msg);
 				}
 				int hashCible = Integer.parseInt(msg[1]);
-				if(hashCible == this.pair.getHash()){
+				
 					switch(msg[0]){
 						case "in":
 							in(msg);
 							break;
 						case "NiceToMeetYou":
+							if(hashCible == this.pair.getHash()){
 							niceToMeetYou(msg);
+							}else{ forwardMessage(msg); }
+							break;
+						case "yaf":
+							this.pair.changeSuccesseur(this.pair.getIp(), this.pair.getHash());
 							break;
 					}
-				}else{
-					forwardMessage(msg);
-				}
 			} catch (IOException e) {
 	
 				e.printStackTrace();
 			}
 		}
+
 	}
 	
 	public void forwardSize(String[] msg){
@@ -73,20 +84,28 @@ public class NetworkListener implements Runnable{
 		String str ="";
 		int hash = Integer.parseInt(msg[1]);
 		int hashSucc = this.pair.getHashSuccesseur();
-		if(hash < hashSucc){
-			try {
-				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
-				Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
-				PrintWriter pw = new PrintWriter(sock.getOutputStream());
-				pw.println(str);
-				pw.close();
-				sock.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		//Pour savoir si le pair n'a que lui comme successeur soit qu'il est tt seul.
+		if(this.pair.getIp().equals(this.pair.getIpSuccesseur())){
+			this.pair.changeSuccesseur(msg[2], hash);
+		}else{
+			if(hash < hashSucc){
+				try {
+					str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
+					Socket sock = new Socket(this.pair.getIpSuccesseur(), NetworkManager.PEER_PORT);
+					PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
+					pw.println(str);
+					pw.close();
+					sock.close();
+					this.pair.changeSuccesseur(msg[2], hash);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				forwardMessage(msg);
 			}
 		}
-		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
+		
 	}
 	
 	public void niceToMeetYou(String[] msg){

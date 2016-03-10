@@ -10,22 +10,23 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-		String ipWelcome ="";
-		int portWelcome = 0;
-		System.out.println("Adresse ip de serveur welcome");
+		String ipServ ="";
+		int portWelcome = 8000;
+		System.out.println("Adresse ip de serveur welcome/hash/moniteur");
 		try {
-			ipWelcome = bufferRead.readLine();
-			System.out.println("Port du serveur welcome");
-			portWelcome = Integer.parseInt(bufferRead.readLine());
+			ipServ = bufferRead.readLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		NetworkManager.setHashServerIp("localhost");
+		NetworkManager.setHashServerIp(ipServ);
 		NetworkManager.setHashServerPort(8001);
+		NetworkManager.setMonitor(ipServ, 8002);
 		Peer monPair = new Peer();
-		NetworkManager.getInNetwork(ipWelcome, portWelcome, monPair);
+		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
+		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
+		Thread thEntree = new Thread(new EntreeThread(monPair));
 	}
 
 }
