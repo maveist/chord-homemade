@@ -79,23 +79,19 @@ public class NetworkListener implements Runnable{
 		int hashSucc = this.pair.getHashSuccesseur();
 		//Pour savoir si le pair n'a que lui comme successeur soit qu'il est tt seul.
 		if(this.pair.getIp().equals(this.pair.getIpSuccesseur())){
-			System.out.println("passage dans la condition 1");
 			this.pair.changeSuccesseur(msg[2], hash);
 			str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
 			NetworkManager.sendMessage(str, msg[2]);
 		}else{
-			System.out.println("passage dans la condition 2");
 			int hashTmp = Peer.hashModulo(this.pair.getHash(), hash, 100);
 			int hashSuccTmp = Peer.hashModulo(this.pair.getHash(), hashSucc, 100);
 			if(hashTmp < hashSuccTmp){
 				
 				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
-				System.out.println("Message pour le nv successeur : "+str);
 				this.pair.changeSuccesseur(msg[2], hash);
 				NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
 			}else{
-				System.out.println("passage dans la condition 2.2");
-				System.out.println("Je forward le message : " + msg.toString());
+
 				forwardMessage(msg);
 			}
 		}
@@ -103,7 +99,7 @@ public class NetworkListener implements Runnable{
 	}
 	
 	public void niceToMeetYou(String[] msg){
-		System.out.println("passe méthode nicetomeetyou");
+
 		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}
 

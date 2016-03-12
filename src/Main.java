@@ -23,7 +23,6 @@ public class Main {
 		NetworkManager.setHashServerPort(8001);
 		NetworkManager.setMonitor(ipServ, 8002);
 		Peer monPair = new Peer();
-		monPair.setIp("192.168.1.36");
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 		Thread thEntree = new Thread(new EntreeThread(monPair));

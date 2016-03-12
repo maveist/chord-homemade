@@ -26,7 +26,13 @@ public class Peer {
 		}
 	}
 	
-	
+	public Peer(String ip){
+		this.ip = ip;
+		this.hash = NetworkManager.getHashFromServer(this.ip);
+		
+		
+		System.out.println(this.ip + " => " + this.hash);
+	}
 	public void changeSuccesseur(String ip, int hash){
 		this.ipSuccesseur = ip;
 		this.hashSuccesseur = hash;
