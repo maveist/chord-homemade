@@ -128,9 +128,10 @@ public class NetworkManager {
 	public static void sendMessage(String msg, String ip){
 		/*Thread th = new Thread(new NetworkSpeaker(msg, ip));
 		th.run();*/
+		System.out.println("Envoi du message: "+msg);
 		try {
 			Socket sock = new Socket(ip, PEER_PORT);
-			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			pw.println(msg);
 			sock.close();
 		} catch (UnknownHostException e) {
@@ -145,10 +146,12 @@ public class NetworkManager {
 	public static void sendMessage(ArrayList<String> msgs, String ip){
 		/*read th = new Thread(new NetworkSpeaker(msgs, ip));
 		th.run();*/
+		System.out.println("Envoi de messages: "+msgs);
 		try {
 			Socket sock = new Socket(ip, PEER_PORT);
 			PrintWriter pw = new PrintWriter(sock.getOutputStream());
 			for(String msg : msgs){
+				pw.println(msg);
 				pw.println(msg);
 			}
 			sock.close();
@@ -164,6 +167,7 @@ public class NetworkManager {
 	public static void sendMessage(ArrayList<String> msgs, String ip, Socket sock){
 		/*Thread th = new Thread(new NetworkSpeaker(msgs,ip,sock));
 		th.run();*/
+		System.out.println("Envoi de messages +socket: "+msgs);
 		try {
 			sock = new Socket(ip, PEER_PORT);
 			PrintWriter pw = new PrintWriter(sock.getOutputStream());
