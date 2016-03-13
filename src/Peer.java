@@ -8,8 +8,13 @@ import java.util.Set;
 public class Peer {
 	private String ip;
 	private int hash;
+	
 	private int hashSuccesseur;
 	private String ipSuccesseur;
+	
+	private int hashPredecesseur;
+	private String ipPredecesseur; 
+	
 	private HashMap<Integer, String> fingers;
 	
 	
@@ -33,11 +38,43 @@ public class Peer {
 		
 		System.out.println(this.ip + " => " + this.hash);
 	}
+	
+	public boolean haveSuccesseur(){
+		return this.ip != this.ipSuccesseur;
+	}
+	
+	public boolean havePredecesseur(){
+		return this.ip != this.ipPredecesseur;
+	}
+	
 	public void changeSuccesseur(String ip, int hash){
 		this.ipSuccesseur = ip;
 		this.hashSuccesseur = hash;
 	}
 	
+	public void changePredecesseur(String ip, int hash){
+		this.ipPredecesseur = ip;
+		this.hashPredecesseur = hash;
+	}
+	
+	
+	
+	public int getHashPredecesseur() {
+		return hashPredecesseur;
+	}
+
+	public void setHashPredecesseur(int hashPredecesseur) {
+		this.hashPredecesseur = hashPredecesseur;
+	}
+
+	public String getIpPredecesseur() {
+		return ipPredecesseur;
+	}
+
+	public void setIpPredecesseur(String ipPredecesseur) {
+		this.ipPredecesseur = ipPredecesseur;
+	}
+
 	public String getIp() {
 		return ip;
 	}
@@ -112,13 +149,21 @@ public class Peer {
 	
 	
 	public void setFinger(){
-		int size = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
+		int size = NetworkManager.sizeOfNetwork();
 		System.out.println(size);
 	}
 	
+	public void sendMessage(int targetedHash, String msg){
+		//TODO à peaufiner
+		if(targetedHash < this.hash){
+			NetworkManager.sendMessage(msg, this.ipPredecesseur);
+		}else{
+			NetworkManager.sendMessage(msg, this.ipSuccesseur);
+		}
+	}
 	
 	public int getClosestFinger(int seekedHash){
-		int networkSize = NetworkManager.sizeOfNetwork(this.hash, this.ipSuccesseur);
+		int networkSize = NetworkManager.sizeOfNetwork();
 		int finalHash = -1;
 		seekedHash = Peer.hashModulo(this.hash, seekedHash, networkSize);
 		

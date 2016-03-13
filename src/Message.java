@@ -2,7 +2,8 @@
 public enum Message {
 	   IN("in"),
        YOUR_SUCCESSOR("ys"),
-	   INSERT_NET("NiceToMeetYou"),
+	   INSERT_NET_PRED("NiceToMeetYouPred"),
+	   INSERT_NET_SUCC("NiceToMeetYouSucc"),
 	   ANS_INSERT_NET("MeToo"),
 	   TELL_FINGER("finger"),
 	   ANS_FINGER("imyourfinger"),

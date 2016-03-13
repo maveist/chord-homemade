@@ -187,7 +187,11 @@ public class WelcomeServer {
 					    out.println(e.getKey() + ":" + e.getValue());
 					out.println("end");
 					break;
-					
+				    case "len?":
+				    //Une demande de la liste des présents, on la transmet
+				    int length = inNetwork.size();
+				    out.println("len:"+Integer.toString(length));
+				    break;
 				    default:
 					out.println("wrq");
 					break;

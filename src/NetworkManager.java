@@ -16,10 +16,11 @@ public class NetworkManager {
 	private static String hashServerIp;
 	private static int hashServerPort;
 	public static String MONITOR_IP;	
-	
+	public static String WELCOME_IP;
 	
 	public static int PEER_PORT = 8005;
 	public static int MONITOR_PORT = 8002;
+	public static int WELCOME_PORT = 8000;
 	
 	
 	// ---------------------------
@@ -41,6 +42,11 @@ public class NetworkManager {
 	public static void setMonitor(String ip, int port){
 		MONITOR_IP = ip;
 		MONITOR_PORT = port;
+	}
+	
+	public static void setWelcome(String ip, int port){
+		WELCOME_IP = ip;
+		WELCOME_PORT = port;
 	}
 	
 	public static int getHashFromServer(String peerIp){
@@ -128,7 +134,7 @@ public class NetworkManager {
 	public static void sendMessage(String msg, String ip){
 		/*Thread th = new Thread(new NetworkSpeaker(msg, ip));
 		th.run();*/
-		System.out.println("Envoi du message: "+msg);
+		System.out.println("Envoi du message: "+msg+" à :"+ip);
 		try {
 			Socket sock = new Socket(ip, PEER_PORT);
 			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
@@ -149,7 +155,7 @@ public class NetworkManager {
 		System.out.println("Envoi de messages: "+msgs);
 		try {
 			Socket sock = new Socket(ip, PEER_PORT);
-			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			for(String msg : msgs){
 				pw.println(msg);
 				pw.println(msg);
@@ -170,7 +176,7 @@ public class NetworkManager {
 		System.out.println("Envoi de messages +socket: "+msgs);
 		try {
 			sock = new Socket(ip, PEER_PORT);
-			PrintWriter pw = new PrintWriter(sock.getOutputStream());
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			for(String msg : msgs){
 				pw.println(msg);
 			}
@@ -185,28 +191,19 @@ public class NetworkManager {
 	}
 	
 	
-	//TODO à tester si le NetworkListener ne prend pas le dessus lors de la réception du message.
-	public static int sizeOfNetwork(int myHash, String ipSuccesseur){
+	
+	public static int sizeOfNetwork(){
 		int size = -1;
 		try {
-			Socket sock = new Socket(ipSuccesseur, PEER_PORT);
-			PrintWriter pw = new PrintWriter(sock.getOutputStream());
-			String str = Message.SIZE_NET.toString()+":"+ Integer.toString(myHash);
-			pw.println(str);
+			Socket sock = new Socket(WELCOME_IP, WELCOME_PORT);
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
+			BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			pw.println("len?");
+			String lenMsg = br.readLine();
+			size = Integer.parseInt(lenMsg);
 			sock.close();
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		try{
-			ServerSocket sockListen = new ServerSocket(NetworkManager.PEER_PORT);
-			Socket sock = sockListen.accept();
-			InputStream input = sock.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(input));
-			String[] received = read.readLine().split(":");
-			size = Integer.parseInt(received[2]); //received[2] => endroit où se trouve le nb de jump du message.
-			sockListen.close();
-		}catch(IOException e){
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return size;

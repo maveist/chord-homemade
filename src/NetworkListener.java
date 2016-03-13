@@ -34,16 +34,16 @@ public class NetworkListener implements Runnable{
 				System.out.println("message reçu: "+bufmsg);
 				if(bufmsg != null){
 					String[] msg = bufmsg.split(":");
-				
-					
 					int hashCible = Integer.parseInt(msg[1]);
-					
 						switch(msg[0]){
 							case "in":
 								in(msg);
 								break;
-							case "NiceToMeetYou":
-								niceToMeetYou(msg);
+							case "NiceToMeetYouSucc":
+								niceToMeetYouSucc(msg);
+								break;
+							case "NiceToMeetYouPred":
+								niceToMeetYouPred(msg);
 								break;
 							case "yaf":
 								this.pair.changeSuccesseur(this.pair.getIp(), this.pair.getHash());
@@ -74,32 +74,43 @@ public class NetworkListener implements Runnable{
 	}
 	
 	public void in(String[] msg){
-		String str ="";
 		int hash = Integer.parseInt(msg[1]);
 		int hashSucc = this.pair.getHashSuccesseur();
 		//Pour savoir si le pair n'a que lui comme successeur soit qu'il est tt seul.
-		if(this.pair.getIp().equals(this.pair.getIpSuccesseur())){
+		if(!this.pair.haveSuccesseur()){
 			this.pair.changeSuccesseur(msg[2], hash);
-			str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
+			String str = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
 			NetworkManager.sendMessage(str, msg[2]);
-		}else{
+		}
+		if(!this.pair.havePredecesseur()){
+			this.pair.changePredecesseur(msg[2], hash);
+			String str = Message.INSERT_NET_PRED.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
+			NetworkManager.sendMessage(str, msg[2]);
+		}
+		if(!this.pair.havePredecesseur() || !this.pair.haveSuccesseur()){
 			int hashTmp = Peer.hashModulo(this.pair.getHash(), hash, 100);
 			int hashSuccTmp = Peer.hashModulo(this.pair.getHash(), hashSucc, 100);
 			if(hashTmp < hashSuccTmp){
+				String strToSucc = Message.INSERT_NET_PRED.toString()+":"+msg[1]+":"+msg[2];
+				NetworkManager.sendMessage(strToSucc, this.pair.getIpSuccesseur());
 				
-				str = Message.INSERT_NET.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
+				String strToNewPeer = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
 				this.pair.changeSuccesseur(msg[2], hash);
-				NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+				NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
+				 
 			}else{
-
 				forwardMessage(msg);
 			}
 		}
 		
+		
 	}
 	
-	public void niceToMeetYou(String[] msg){
-
+	public void niceToMeetYouPred(String[] msg){
+		this.pair.changePredecesseur(msg[2], Integer.parseInt(msg[1]));
+	}
+	
+	public void niceToMeetYouSucc(String[] msg){
 		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}
 
