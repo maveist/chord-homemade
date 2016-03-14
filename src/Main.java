@@ -26,7 +26,19 @@ public class Main {
 		Peer monPair = new Peer();
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
-		Thread thEntree = new Thread(new EntreeThread(monPair));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		while(true){
+			try {
+				System.out.println("Ecrire un message:");
+				String msg = br.readLine();
+				System.out.println("Envoyer à qui? (valeur de hash):");
+				String dest = br.readLine();
+				monPair.sendMessage(Integer.parseInt(dest), msg);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
 	}
 
 }

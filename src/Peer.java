@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,12 +157,38 @@ public class Peer {
 	
 	public void sendMessage(int targetedHash, String msg){
 		//TODO à peaufiner
-		if(targetedHash < this.hash){
-			NetworkManager.sendMessage(msg, this.ipPredecesseur);
-		}else{
-			NetworkManager.sendMessage(msg, this.ipSuccesseur);
+		try{
+			if(targetedHash < this.hash){
+				NetworkManager.sendMessage(msg, this.ipPredecesseur);
+			}else{
+				NetworkManager.sendMessage(msg, this.ipSuccesseur);
+			}
+		}catch(IOException e){
+			this.signalLeaver(targetedHash);
 		}
 	}
+	
+	
+	
+	public void signalLeaver(int hash){
+		//TODO Envoyer un message à WelcomeListener
+		//faire un broadcast partout du message.
+		
+		try {
+			//Notifie au welcome serveur que quelqu'un s'est déconnecté
+			String msg = Message.BAD_DISCONNECT.toString()+":"+Integer.toString(hash);
+			Socket sockToWelcome = new Socket(NetworkManager.WELCOME_IP, NetworkManager.WELCOME_PORT);
+			NetworkManager.sendMessage(msg, sockToWelcome);
+			
+			//Notifie à tout le monde que quelqu'un est parti
+			NetworkManager.sendMessage(msg, this.ipSuccesseur);
+			NetworkManager.sendMessage(msg, this.ipPredecesseur);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+	}
+	
 	
 	public int getClosestFinger(int seekedHash){
 		int networkSize = NetworkManager.sizeOfNetwork();

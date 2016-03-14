@@ -48,6 +48,16 @@ public class NetworkListener implements Runnable{
 							case "yaf":
 								this.pair.changeSuccesseur(this.pair.getIp(), this.pair.getHash());
 								break;
+							case "ws":
+								this.whoSuccessor(msg);
+								break;
+							case "wp":
+								this.whoPredecessor(msg);
+								break;
+							case "bd":
+								
+								break;
+							
 						}
 				}
 				} catch (IOException e) {
@@ -58,19 +68,44 @@ public class NetworkListener implements Runnable{
 
 	}
 	
-	public void forwardSize(String[] msg){
+	public void forwardSize(String[] msg, boolean toSucc){
 		int currentSize = Integer.parseInt(msg[2]);
+		String ipDest ="";
+		int hashDest = -1;
+		if(toSucc){
+			ipDest = this.pair.getIpSuccesseur();
+			hashDest = this.pair.getHashSuccesseur();
+		}else{
+			ipDest = this.pair.getIpPredecesseur();
+			hashDest = this.pair.getHashPredecesseur();
+		}
 		String str = msg[0]+":"+msg[1]+":"+Integer.toString(currentSize);
-		NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+		try{
+			NetworkManager.sendMessage(str, ipDest);
+		}catch(IOException e){
+			this.pair.signalLeaver(hashDest);
+		}
 	}
 	
-	public void forwardMessage(String[] msg){
+	public void forwardMessage(String[] msg, boolean toSucc){
 		String str = msg[0]; 
 		for(int i = 1 ; i < msg.length; i++){
 			str = str+":"+msg[i];
 		}
-		System.out.println("ip succ:"+this.pair.getIpSuccesseur());
-		NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+		String ipDest ="";
+		int hashDest = -1;
+		if(toSucc){
+			ipDest = this.pair.getIpSuccesseur();
+			hashDest = this.pair.getHashSuccesseur();
+		}else{
+			ipDest = this.pair.getIpPredecesseur();
+			hashDest = this.pair.getHashPredecesseur();
+		}
+		try{
+			NetworkManager.sendMessage(str, ipDest);
+		}catch(IOException e){
+			this.pair.signalLeaver(hashDest);
+		}
 	}
 	
 	public void in(String[] msg){
@@ -80,30 +115,44 @@ public class NetworkListener implements Runnable{
 		if(!this.pair.haveSuccesseur()){
 			this.pair.changeSuccesseur(msg[2], hash);
 			String str = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
-			NetworkManager.sendMessage(str, msg[2]);
+			try{
+				NetworkManager.sendMessage(str, msg[2]);
+			}catch(IOException e){
+				this.pair.signalLeaver(this.pair.getHashSuccesseur());
+			}
 		}
 		if(!this.pair.havePredecesseur()){
 			this.pair.changePredecesseur(msg[2], hash);
 			String str = Message.INSERT_NET_PRED.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
-			NetworkManager.sendMessage(str, msg[2]);
+			try{
+				NetworkManager.sendMessage(str, msg[2]);
+			}catch(IOException e){
+				this.pair.signalLeaver(hash);
+			}
 		}
 		if(!this.pair.havePredecesseur() || !this.pair.haveSuccesseur()){
 			int hashTmp = Peer.hashModulo(this.pair.getHash(), hash, 100);
 			int hashSuccTmp = Peer.hashModulo(this.pair.getHash(), hashSucc, 100);
 			if(hashTmp < hashSuccTmp){
 				String strToSucc = Message.INSERT_NET_PRED.toString()+":"+msg[1]+":"+msg[2];
-				NetworkManager.sendMessage(strToSucc, this.pair.getIpSuccesseur());
+				try{
+					NetworkManager.sendMessage(strToSucc, this.pair.getIpSuccesseur());
+				}catch(IOException e){
+					this.pair.signalLeaver(this.pair.getHashSuccesseur());
+				}
 				
 				String strToNewPeer = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
 				this.pair.changeSuccesseur(msg[2], hash);
-				NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
+				try{
+					NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
+				}catch(IOException e){
+					this.pair.signalLeaver(this.pair.getHashSuccesseur());
+				}
 				 
 			}else{
-				forwardMessage(msg);
+				forwardMessage(msg, true);
 			}
 		}
-		
-		
 	}
 	
 	public void niceToMeetYouPred(String[] msg){
@@ -113,5 +162,45 @@ public class NetworkListener implements Runnable{
 	public void niceToMeetYouSucc(String[] msg){
 		this.pair.changeSuccesseur(msg[2], Integer.parseInt(msg[1]));
 	}
+	
+	public void whoSuccessor(String[] msg){
+		int oldHash = Integer.parseInt(msg[1]);
+		int hashClaimer = Integer.parseInt(msg[2]);
+		String ipClaimer = msg[3];
+		if(this.pair.getHashPredecesseur() == oldHash){
+			//envoie message : "its me"
+		}else{
+			this.forwardMessage(msg, false);
+		}
+	}
+	
+	public void whoPredecessor(String[] msg){
+		int oldHash = Integer.parseInt(msg[1]);
+		int hashClaimer = Integer.parseInt(msg[2]);
+		String ipClaimer = msg[3];
+		if(this.pair.getHashSuccesseur() == oldHash){
+			//envoie message : "its me"
+		}else{
+			this.forwardMessage(msg, true);
+		}
+	}
 
+	public void badDisconnect(String[] msg){
+		int oldHash = Integer.parseInt(msg[1]);
+		if(oldHash == this.pair.getHashPredecesseur()){
+			String str = Message.WHO_PRED.toString()+":"+msg[1];
+			try{
+				NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+			}catch(IOException e){
+				this.pair.signalLeaver(this.pair.getHashSuccesseur());
+			}
+		}else if(oldHash == this.pair.getHashSuccesseur()){
+			String str = Message.WHO_SUCC.toString()+":"+msg[1];
+			try{
+				NetworkManager.sendMessage(str, this.pair.getIpPredecesseur());
+			}catch(IOException e){
+				this.pair.signalLeaver(this.pair.getHashPredecesseur());
+			}
+		}
+	}
 }

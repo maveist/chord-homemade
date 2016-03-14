@@ -55,7 +55,11 @@ public class MessageListener implements Runnable{
 		for(int i = 1 ; i < msg.length; i++){
 			str = str+":"+msg[i];
 		}
-		NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+		try{
+			NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
+		}catch(IOException e){
+			this.pair.signalLeaver(this.pair.getHashSuccesseur());
+		}
 	}
 
 }

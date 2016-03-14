@@ -8,6 +8,9 @@ public enum Message {
 	   TELL_FINGER("finger"),
 	   ANS_FINGER("imyourfinger"),
 	   SIZE_NET("size"),
+	   WHO_SUCC("ws"),
+	   WHO_PRED("wp"),
+	   BAD_DISCONNECT("bd"),
 	   MESSAGE("msg");
 	   
 	   

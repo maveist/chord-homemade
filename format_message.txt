@@ -30,6 +30,22 @@ Format des messages classiques:
 	  		msg:x:txt
 	  			->x :hash destinataire
 
+	  format message pour balançer si quelqu'un s'est mal déconnecté!
+	  		bd:hashDisconnect
+	  	
+	  format message pour demander qui était le successeur de la machine mal déconnectée
+	 		ws:x:y:z
+	 			-> x: hash de la machine mal déconnecté
+	 			-> y: hash du demandeur
+	 			-> z: ip du demandeur
+
+	  format message pour demander qui était le predecesseur de la machine mal déconnectée
+	 		wp:x:y:z
+	 			-> x: hash de la machine mal déconnecté
+	 			-> y: hash du demandeur
+	 			-> z: ip du demandeur
+	 			
+	 			
 Format de message destinée à MonitorServer:
 	
 		pour répondre à la demande de table de routage.

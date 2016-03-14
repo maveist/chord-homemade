@@ -131,7 +131,7 @@ public class NetworkManager {
 	
 	
 		
-	public static void sendMessage(String msg, String ip){
+	public static void sendMessage(String msg, String ip) throws IOException{
 		/*Thread th = new Thread(new NetworkSpeaker(msg, ip));
 		th.run();*/
 		System.out.println("Envoi du message: "+msg+" à :"+ip);
@@ -143,10 +143,7 @@ public class NetworkManager {
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 	
 	public static void sendMessage(ArrayList<String> msgs, String ip){
@@ -175,7 +172,6 @@ public class NetworkManager {
 		th.run();*/
 		System.out.println("Envoi de messages +socket: "+msgs);
 		try {
-			sock = new Socket(ip, PEER_PORT);
 			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			for(String msg : msgs){
 				pw.println(msg);
@@ -188,6 +184,18 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void sendMessage(String msg, Socket sock){
+		try {
+			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
+			pw.println(msg);
+			sock.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
