@@ -127,8 +127,7 @@ public class NetworkManager {
 				//pair.setFinger();
 				
 	}
-	
-	
+
 	
 		
 	public static void sendMessage(String msg, String ip) throws IOException{

@@ -9,8 +9,12 @@ public enum Message {
 	   ANS_FINGER("imyourfinger"),
 	   SIZE_NET("size"),
 	   WHO_SUCC("ws"),
+	   IAM_SUCC("ims"),
 	   WHO_PRED("wp"),
+	   IAM_PRED("imp"),
 	   BAD_DISCONNECT("bd"),
+	   DISCONNECT_TO_WELCOME("a+"),
+	   QUIT_NETWORK("quit"),
 	   MESSAGE("msg");
 	   
 	   

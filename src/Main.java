@@ -31,9 +31,14 @@ public class Main {
 			try {
 				System.out.println("Ecrire un message:");
 				String msg = br.readLine();
-				System.out.println("Envoyer à qui? (valeur de hash):");
-				String dest = br.readLine();
-				monPair.sendMessage(Integer.parseInt(dest), msg);
+				if(msg.equals("quit")){
+					System.out.println("déconnection.");
+					return;
+				}else{
+					System.out.println("Envoyer à qui? (valeur de hash):");
+					String dest = br.readLine();
+					monPair.sendMessage(Integer.parseInt(dest), msg);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

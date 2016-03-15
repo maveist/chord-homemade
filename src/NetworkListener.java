@@ -34,7 +34,6 @@ public class NetworkListener implements Runnable{
 				System.out.println("message reçu: "+bufmsg);
 				if(bufmsg != null){
 					String[] msg = bufmsg.split(":");
-					int hashCible = Integer.parseInt(msg[1]);
 						switch(msg[0]){
 							case "in":
 								in(msg);
@@ -55,7 +54,19 @@ public class NetworkListener implements Runnable{
 								this.whoPredecessor(msg);
 								break;
 							case "bd":
-								
+								this.badDisconnect(msg);
+								break;
+							case "ims":
+								//réponse iam successor
+								int hashNewSucc = Integer.parseInt(msg[1]);
+								String ipNewSucc = msg[2];
+								this.pair.changeSuccesseur(ipNewSucc, hashNewSucc);
+								break;
+							case "ips":
+								//reponse iam predecessor
+								int hashNewPred = Integer.parseInt(msg[1]);
+								String ipNewPred = msg[2];
+								this.pair.changePredecesseur(ipNewPred, hashNewPred);
 								break;
 							
 						}
@@ -168,7 +179,12 @@ public class NetworkListener implements Runnable{
 		int hashClaimer = Integer.parseInt(msg[2]);
 		String ipClaimer = msg[3];
 		if(this.pair.getHashPredecesseur() == oldHash){
-			//envoie message : "its me"
+			try{
+				String str = Message.IAM_SUCC.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
+				NetworkManager.sendMessage(str, ipClaimer);
+			}catch(IOException e){
+				this.pair.signalLeaver(hashClaimer);
+			}
 		}else{
 			this.forwardMessage(msg, false);
 		}
@@ -179,7 +195,12 @@ public class NetworkListener implements Runnable{
 		int hashClaimer = Integer.parseInt(msg[2]);
 		String ipClaimer = msg[3];
 		if(this.pair.getHashSuccesseur() == oldHash){
-			//envoie message : "its me"
+			try{
+				String str = Message.IAM_PRED.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
+				NetworkManager.sendMessage(str, ipClaimer);
+			}catch(IOException e){
+				this.pair.signalLeaver(hashClaimer);
+			}
 		}else{
 			this.forwardMessage(msg, true);
 		}
