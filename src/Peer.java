@@ -155,17 +155,34 @@ public class Peer {
 		System.out.println(size);
 	}
 	
-	public void sendMessage(int targetedHash, String msg){
-		//TODO à peaufiner
+	public void sendMessage(int targetedHash, String msg) throws Exception{
 		try{
-			if(targetedHash < this.hash){
-				NetworkManager.sendMessage(msg, this.ipPredecesseur);
-			}else{
-				NetworkManager.sendMessage(msg, this.ipSuccesseur);
-			}
+			int hashToSend = this.getClosestFinger(targetedHash);
+			String ipToSend = this.getIpFromHash(hashToSend);
+			
+			if(ipToSend != "null")
+				NetworkManager.sendMessage(msg, ipToSend);
+			else
+				throw new Exception("IP introuvable.");
 		}catch(IOException e){
 			this.signalLeaver(targetedHash);
 		}
+	}
+	
+	public String getIpFromHash(int hash){
+		if (hash == this.hashSuccesseur)
+			return this.ipSuccesseur;
+		else if(hash == this.hashPredecesseur)
+			return this.ipPredecesseur;
+		else if(hash == this.hash)
+			return this.ip;
+		else
+			for(int curHash : this.fingers.keySet()){
+				if(curHash == hash)
+					return this.fingers.get(hash);
+			}
+		
+		return "null";
 	}
 	
 	
@@ -195,15 +212,22 @@ public class Peer {
 		int networkSize = NetworkManager.sizeOfNetwork();
 		int finalHash = -1;
 		seekedHash = Peer.hashModulo(this.hash, seekedHash, networkSize);
+		HashMap<Integer, String> possibleDestinations = this.fingers;
+								 possibleDestinations.put(this.hashSuccesseur, this.ipSuccesseur);
+								 possibleDestinations.put(this.hashPredecesseur, this.ipPredecesseur);
 		
+		int dist = -1;
 		// On parcours les finger (on prend le soins de réajuster les hash avec le modulo).
-		for(int fingerHash : this.fingers.keySet()){
+		for(int fingerHash : possibleDestinations.keySet()){
 			fingerHash = Peer.hashModulo(this.hash, fingerHash, networkSize);
-
-			if(fingerHash < seekedHash)
+			int curDist = Math.abs(seekedHash - fingerHash);
+			
+			if(dist == -1)
+				dist = curDist;
+			else if(curDist < dist){
+				dist = curDist;
 				finalHash = fingerHash;
-			else
-				break;
+			}
 		}
 				
 		return Peer.hashModuloInverse(this.hash, finalHash, networkSize);
