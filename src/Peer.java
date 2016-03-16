@@ -15,7 +15,9 @@ public class Peer {
 	private String ipSuccesseur;
 	
 	private int hashPredecesseur;
-	private String ipPredecesseur; 
+	private String ipPredecesseur;
+	
+	private String waitingMessage;
 	
 	private HashMap<Integer, String> fingers;
 	
@@ -105,6 +107,14 @@ public class Peer {
 		return ipSuccesseur;
 	}
 
+	public String getWaitingMessage(){
+		return this.waitingMessage;
+	}
+	
+	public void setWaitingMessage(String waitMsg){
+		this.waitingMessage = waitMsg;
+	}
+	
 	public void setIpSuccesseur(String ipSuccesseur) {
 		this.ipSuccesseur = ipSuccesseur;
 	}
@@ -164,16 +174,16 @@ public class Peer {
 				NetworkManager.sendMessage(msg, this.ipSuccesseur);
 			}
 		}catch(IOException e){
-			this.signalLeaver(targetedHash);
+			this.signalLeaver(msg, targetedHash);
 		}
 	}
 	
 	
 	
-	public void signalLeaver(int hash){
+	public void signalLeaver(String waitMsg, int hash){
 		//TODO Envoyer un message à WelcomeListener
 		//faire un broadcast partout du message.
-		
+		this.waitingMessage = waitMsg;
 		try {
 			//Notifie au welcome serveur que quelqu'un s'est déconnecté
 			String msg = Message.DISCONNECT_TO_WELCOME.toString()+":"+Integer.toString(hash);

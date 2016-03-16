@@ -27,6 +27,7 @@ public class Main {
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		//TODO vérifier si le destinataire du message existe bien.
 		while(true){
 			try {
 				System.out.println("Ecrire un message:");

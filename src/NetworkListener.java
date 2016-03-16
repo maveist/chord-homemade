@@ -61,12 +61,20 @@ public class NetworkListener implements Runnable{
 								int hashNewSucc = Integer.parseInt(msg[1]);
 								String ipNewSucc = msg[2];
 								this.pair.changeSuccesseur(ipNewSucc, hashNewSucc);
+								if(this.pair.getWaitingMessage() != null){
+									this.pair.sendMessage(this.pair.getHashSuccesseur(), this.pair.getWaitingMessage());
+									this.pair.setWaitingMessage(null);
+								}
 								break;
 							case "ips":
 								//reponse iam predecessor
 								int hashNewPred = Integer.parseInt(msg[1]);
 								String ipNewPred = msg[2];
 								this.pair.changePredecesseur(ipNewPred, hashNewPred);
+								if(this.pair.getWaitingMessage() != null){
+									this.pair.sendMessage(this.pair.getHashPredecesseur(), this.pair.getWaitingMessage());
+									this.pair.setWaitingMessage(null);
+								}
 								break;
 							
 						}
@@ -94,7 +102,7 @@ public class NetworkListener implements Runnable{
 		try{
 			NetworkManager.sendMessage(str, ipDest);
 		}catch(IOException e){
-			this.pair.signalLeaver(hashDest);
+			this.pair.signalLeaver(str, hashDest);
 		}
 	}
 	
@@ -115,7 +123,7 @@ public class NetworkListener implements Runnable{
 		try{
 			NetworkManager.sendMessage(str, ipDest);
 		}catch(IOException e){
-			this.pair.signalLeaver(hashDest);
+			this.pair.signalLeaver(str, hashDest);
 		}
 	}
 	
@@ -129,7 +137,7 @@ public class NetworkListener implements Runnable{
 			try{
 				NetworkManager.sendMessage(str, msg[2]);
 			}catch(IOException e){
-				this.pair.signalLeaver(this.pair.getHashSuccesseur());
+				this.pair.signalLeaver(str, this.pair.getHashSuccesseur());
 			}
 		}
 		if(!this.pair.havePredecesseur()){
@@ -138,7 +146,7 @@ public class NetworkListener implements Runnable{
 			try{
 				NetworkManager.sendMessage(str, msg[2]);
 			}catch(IOException e){
-				this.pair.signalLeaver(hash);
+				this.pair.signalLeaver(str, hash);
 			}
 		}
 		if(!this.pair.havePredecesseur() || !this.pair.haveSuccesseur()){
@@ -149,7 +157,7 @@ public class NetworkListener implements Runnable{
 				try{
 					NetworkManager.sendMessage(strToSucc, this.pair.getIpSuccesseur());
 				}catch(IOException e){
-					this.pair.signalLeaver(this.pair.getHashSuccesseur());
+					this.pair.signalLeaver(strToSucc, this.pair.getHashSuccesseur());
 				}
 				
 				String strToNewPeer = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
@@ -157,7 +165,7 @@ public class NetworkListener implements Runnable{
 				try{
 					NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
 				}catch(IOException e){
-					this.pair.signalLeaver(this.pair.getHashSuccesseur());
+					this.pair.signalLeaver(strToNewPeer, this.pair.getHashSuccesseur());
 				}
 				 
 			}else{
@@ -175,15 +183,16 @@ public class NetworkListener implements Runnable{
 	}
 	
 	public void whoSuccessor(String[] msg){
+		String str ="";
 		int oldHash = Integer.parseInt(msg[1]);
 		int hashClaimer = Integer.parseInt(msg[2]);
 		String ipClaimer = msg[3];
 		if(this.pair.getHashPredecesseur() == oldHash){
 			try{
-				String str = Message.IAM_SUCC.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
+				str = Message.IAM_SUCC.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
 				NetworkManager.sendMessage(str, ipClaimer);
 			}catch(IOException e){
-				this.pair.signalLeaver(hashClaimer);
+				this.pair.signalLeaver(str, hashClaimer);
 			}
 		}else{
 			this.forwardMessage(msg, false);
@@ -191,15 +200,16 @@ public class NetworkListener implements Runnable{
 	}
 	
 	public void whoPredecessor(String[] msg){
+		String str ="";
 		int oldHash = Integer.parseInt(msg[1]);
 		int hashClaimer = Integer.parseInt(msg[2]);
 		String ipClaimer = msg[3];
 		if(this.pair.getHashSuccesseur() == oldHash){
 			try{
-				String str = Message.IAM_PRED.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
+				str = Message.IAM_PRED.toString()+":"+this.pair.getHash()+":"+this.pair.getIp();
 				NetworkManager.sendMessage(str, ipClaimer);
 			}catch(IOException e){
-				this.pair.signalLeaver(hashClaimer);
+				this.pair.signalLeaver(str, hashClaimer);
 			}
 		}else{
 			this.forwardMessage(msg, true);
@@ -213,15 +223,17 @@ public class NetworkListener implements Runnable{
 			try{
 				NetworkManager.sendMessage(str, this.pair.getIpSuccesseur());
 			}catch(IOException e){
-				this.pair.signalLeaver(this.pair.getHashSuccesseur());
+				this.pair.signalLeaver(str, this.pair.getHashSuccesseur());
 			}
 		}else if(oldHash == this.pair.getHashSuccesseur()){
 			String str = Message.WHO_SUCC.toString()+":"+msg[1];
 			try{
 				NetworkManager.sendMessage(str, this.pair.getIpPredecesseur());
 			}catch(IOException e){
-				this.pair.signalLeaver(this.pair.getHashPredecesseur());
+				this.pair.signalLeaver(str, this.pair.getHashPredecesseur());
 			}
+		}else{
+			forwardMessage(msg, true);
 		}
 	}
 }
