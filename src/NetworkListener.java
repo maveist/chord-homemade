@@ -58,6 +58,12 @@ public class NetworkListener implements Runnable{
 							case "bd":
 								this.badDisconnect(msg);
 								break;
+							case "iqPrecc":
+								this.pair.changePredecesseur(msg[2], Integer.parseInt(msg[1]));
+								break;
+							case "ipSucc":
+								this.pair.changePredecesseur(msg[2], Integer.parseInt(msg[1]));
+								break;
 							case "ims":
 								//réponse iam successor
 								int hashNewSucc = Integer.parseInt(msg[1]);
@@ -284,7 +290,8 @@ public class NetworkListener implements Runnable{
 			this.forwardMessage(msg, true);
 		}
 	}
-
+	
+	
 	public void badDisconnect(String[] msg){
 		int oldHash = Integer.parseInt(msg[1]);
 		if(oldHash == this.pair.getHashPredecesseur()){

@@ -29,6 +29,7 @@ public class EntreeThread implements Runnable{
 					}
 				}else{
 					NetworkManager.disconnect(this.pair);
+					System.out.println("déconnection.");
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

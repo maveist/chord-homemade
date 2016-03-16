@@ -13,6 +13,8 @@ public enum Message {
 	   WHO_PRED("wp"),
 	   IAM_PRED("imp"),
 	   BAD_DISCONNECT("bd"),
+	   DISCONNECT_PRED("iqPrec"),
+	   DISCONNECT_SUCC("iqSucc"),
 	   DISCONNECT_TO_WELCOME("a+"),
 	   QUIT_NETWORK("quit"),
 	   MESSAGE("msg");
