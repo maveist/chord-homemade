@@ -28,6 +28,7 @@ public class Main {
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		//TODO vérifier si le destinataire du message existe bien.
+		//TODO vérifier si le dest du waiting message existe encore
 		while(true){
 			try {
 				System.out.println("Ecrire un message:");
@@ -38,7 +39,15 @@ public class Main {
 				}else{
 					System.out.println("Envoyer à qui? (valeur de hash):");
 					String dest = br.readLine();
-					monPair.sendMessage(Integer.parseInt(dest), msg);
+					try {
+						monPair.sendMessage(Integer.parseInt(dest), msg);
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

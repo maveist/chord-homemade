@@ -62,7 +62,12 @@ public class NetworkListener implements Runnable{
 								String ipNewSucc = msg[2];
 								this.pair.changeSuccesseur(ipNewSucc, hashNewSucc);
 								if(this.pair.getWaitingMessage() != null){
-									this.pair.sendMessage(this.pair.getHashSuccesseur(), this.pair.getWaitingMessage());
+									try {
+										this.pair.sendMessage(this.pair.getHashSuccesseur(), this.pair.getWaitingMessage());
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 									this.pair.setWaitingMessage(null);
 								}
 								break;
@@ -72,7 +77,12 @@ public class NetworkListener implements Runnable{
 								String ipNewPred = msg[2];
 								this.pair.changePredecesseur(ipNewPred, hashNewPred);
 								if(this.pair.getWaitingMessage() != null){
-									this.pair.sendMessage(this.pair.getHashPredecesseur(), this.pair.getWaitingMessage());
+									try {
+										this.pair.sendMessage(this.pair.getHashPredecesseur(), this.pair.getWaitingMessage());
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 									this.pair.setWaitingMessage(null);
 								}
 								break;
