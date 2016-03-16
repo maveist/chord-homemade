@@ -24,8 +24,10 @@ public class Main {
 		NetworkManager.setMonitor(ipServ, 8002);
 		NetworkManager.setWelcome(ipServ, 8000);
 		Peer monPair = new Peer();
+
 		Thread entreeTh = new Thread(new EntreeThread(monPair));
 		entreeTh.run();
+
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
