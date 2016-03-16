@@ -18,9 +18,18 @@ public class EntreeThread implements Runnable{
 				BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 				System.out.println("Entrez le message à envoyer:");
 				String msg = reader.readLine();
-				System.out.println("Envoyer à qui? (spécifiez le numéro de hash):");
-				int hash = Integer.parseInt(reader.readLine());
-				NetworkManager.sendMessage(msg, this.pair.getIpSuccesseur());
+				if(!msg.equals("quit")){
+					System.out.println("Envoyer à qui? (spécifiez le numéro de hash):");
+					int hash = Integer.parseInt(reader.readLine());
+					try {
+						this.pair.sendMessage(hash, msg);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
+					NetworkManager.disconnect(this.pair);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

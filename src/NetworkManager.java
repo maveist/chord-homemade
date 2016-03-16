@@ -119,12 +119,15 @@ public class NetworkManager {
 				//La méthode se termine, on créée un thread pour écouter les messages sur le réseau
 				//et ainsi avoir des réponses pour avoir le successeur.
 				System.out.println("Connexion ok.");
+				Thread entreeTh = new Thread(new EntreeThread(pair));
+				entreeTh.run();
 				NetworkListener nl = new NetworkListener(pair);
 				Thread netListener = new Thread(nl);
 				netListener.start();
 				Thread thMonitor = new Thread(new MonitorListener(pair));
 				thMonitor.run();
-				//pair.setFinger();
+				
+				pair.setFinger();
 				
 	}
 
@@ -214,5 +217,22 @@ public class NetworkManager {
 			e.printStackTrace();
 		}
 		return size;
+	}
+	
+	public static void disconnect(Peer pair){
+		
+		 
+		try {
+			String str = Message.DISCONNECT_TO_WELCOME.toString()+":"+pair.getHash();
+			Socket sock = new Socket(WELCOME_IP, WELCOME_PORT);
+			NetworkManager.sendMessage(str, sock);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -23,13 +23,12 @@ public class Main {
 		NetworkManager.setHashServerPort(8001);
 		NetworkManager.setMonitor(ipServ, 8002);
 		NetworkManager.setWelcome(ipServ, 8000);
-		Peer monPair = new Peer();
+		Peer monPair = new Peer("192.168.1.36");
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		//TODO vérifier si le destinataire du message existe bien.
-		//TODO vérifier si le dest du waiting message existe encore
-		//TODO NiceToMeet messages à envoyer en une seule fois avec une arraylist
+		//TODO vérifier si le dest du waiting message existe encore.
 		while(true){
 			try {
 				System.out.println("Ecrire un message:");

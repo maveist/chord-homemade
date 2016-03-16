@@ -166,10 +166,12 @@ public class NetworkListener implements Runnable{
 				}
 				
 				String strToNewPeer = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
+				String strToNewPeer1 = Message.INSERT_NET_PRED.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
 				msgs.add(strToNewPeer);
 				this.pair.changeSuccesseur(msg[2], hash);
 				try{
 					NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
+					NetworkManager.sendMessage(strToNewPeer1, this.pair.getIpSuccesseur());
 				}catch(IOException e){
 					this.sendImportantMessage(strToNewPeer, this.pair.getIpSuccesseur());
 					System.out.println("erreur dans l'envoi de message");
