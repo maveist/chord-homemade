@@ -44,11 +44,11 @@ public class Peer {
 	}
 	
 	public boolean haveSuccesseur(){
-		return this.ip != this.ipSuccesseur;
+		return (this.ip != this.ipSuccesseur && this.ipSuccesseur != null );
 	}
 	
 	public boolean havePredecesseur(){
-		return this.ip != this.ipPredecesseur;
+		return (this.ip != this.ipPredecesseur && this.ipPredecesseur != null);
 	}
 	
 	public void changeSuccesseur(String ip, int hash){
@@ -145,7 +145,9 @@ public class Peer {
 	public ArrayList<String> getRouteTable(){
 		ArrayList<String> rt = new ArrayList<>();
 		String myHashString =Integer.toString(this.hash);
-		String tmp = myHashString +":"+Integer.toString(this.hashSuccesseur)+":"+this.ipSuccesseur;
+		String tmp = myHashString+":"+Integer.toString(this.hashPredecesseur)+":"+this.ipPredecesseur; 
+		rt.add(tmp);
+		tmp = myHashString +":"+Integer.toString(this.hashSuccesseur)+":"+this.ipSuccesseur;
 		rt.add(tmp);
 		if(this.fingers != null && !this.fingers.isEmpty()){
 			for(int hashS : this.fingers.keySet()){
@@ -158,7 +160,6 @@ public class Peer {
 		rt.add("end");
 		return rt;
 	}
-	
 	
 	public void setFinger(){
 		int size = NetworkManager.sizeOfNetwork();
@@ -175,6 +176,8 @@ public class Peer {
 			else
 				throw new Exception("IP introuvable.");
 		}catch(IOException e){
+			System.out.println("erreur dans l'envoi de message");
+			e.printStackTrace();
 			this.signalLeaver(msg, targetedHash);
 		}
 	}
@@ -200,6 +203,7 @@ public class Peer {
 	public void signalLeaver(String waitMsg, int hash){
 		//TODO Envoyer un message à WelcomeListener
 		//faire un broadcast partout du message.
+		
 		this.waitingMessage = waitMsg;
 		try {
 			//Notifie au welcome serveur que quelqu'un s'est déconnecté

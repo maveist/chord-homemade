@@ -29,6 +29,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		//TODO vérifier si le destinataire du message existe bien.
 		//TODO vérifier si le dest du waiting message existe encore
+		//TODO NiceToMeet messages à envoyer en une seule fois avec une arraylist
 		while(true){
 			try {
 				System.out.println("Ecrire un message:");

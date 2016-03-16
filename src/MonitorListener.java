@@ -20,8 +20,9 @@ public class MonitorListener implements Runnable{
 			ServerSocket servSock = null;
 			try {
 				servSock = new ServerSocket(NetworkManager.MONITOR_PORT);
-				Socket sock = servSock.accept();
+				
 				while(true){
+					Socket sock = servSock.accept();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 					String message = reader.readLine();
 					String[] msg = message.split(":");

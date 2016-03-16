@@ -8,7 +8,7 @@
  *   2. Dans l'invite qui s'affiche, taper les commandes à exécuter (help pour la liste)
  *
  */
-package utils;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
