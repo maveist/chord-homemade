@@ -6,12 +6,14 @@ import java.io.InputStreamReader;
 public class EntreeThread implements Runnable{
 	private Peer pair;
 	
-	public EntreeThread(Peer peer){
+	public EntreeThread(/*String ipServ, int port,*/ Peer peer){
 		this.pair = peer;
+		//NetworkManager.getInNetwork(ipServ, port, peer);
 	}
 	
 	@Override
-	public void run() {
+	
+	public  void run() {
 		// TODO Auto-generated method stub
 		while(true){
 			try {
@@ -30,6 +32,7 @@ public class EntreeThread implements Runnable{
 				}else{
 					NetworkManager.disconnect(this.pair);
 					System.out.println("déconnection.");
+					System.exit(0);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

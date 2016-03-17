@@ -168,13 +168,22 @@ public class Peer {
 	
 	public void sendMessage(int targetedHash, String msg) throws Exception{
 		try{
-			int hashToSend = this.getClosestFinger(targetedHash);
-			String ipToSend = this.getIpFromHash(hashToSend);
-			
-			if(ipToSend != "null")
-				NetworkManager.sendMessage(msg, ipToSend);
-			else
-				throw new Exception("IP introuvable.");
+			if(targetedHash == this.hashSuccesseur){
+				NetworkManager.sendMessage(msg, this.ipSuccesseur);
+			}else if(targetedHash == this.hashPredecesseur){
+				NetworkManager.sendMessage(msg, this.ipPredecesseur);
+			}else{
+				
+				
+				int hashToSend = this.getClosestFinger(targetedHash);
+				String ipToSend = this.getIpFromHash(hashToSend);
+				
+				if(ipToSend != "null"){
+					NetworkManager.sendMessage(msg, ipToSend);
+				}else{
+					throw new Exception("IP introuvable.");
+				}
+			}
 		}catch(IOException e){
 			System.out.println("erreur dans l'envoi de message");
 			e.printStackTrace();

@@ -18,6 +18,7 @@ public class NetworkListener implements Runnable{
 	
 	@Override
 	public void run() {
+		
 		ServerSocket servSock = null;
 		try {
 			servSock = new ServerSocket(NetworkManager.PEER_PORT);
@@ -153,14 +154,13 @@ public class NetworkListener implements Runnable{
 		if(this.pair.havePredecesseur() && this.pair.haveSuccesseur()){
 			/*int hashTmp = Peer.hashModulo(this.pair.getHash(), hash, 100);
 			int hashSuccTmp = Peer.hashModulo(this.pair.getHash(), hashSucc, 100);*/
-			ArrayList<String> msgs = new ArrayList();
+			
 			int myHash = this.pair.getHash();
 			int myhashSu = this.pair.getHashSuccesseur();
 			//if(hashTmp < hashSuccTmp){
 			System.out.println("mon hash: "+Integer.toString(myHash)+" le hash de mon successeur: "+Integer.toString(myhashSu));
 			if((myHash > myhashSu && hashSucc > myHash) || hashSucc > myHash){
 				String strToSucc = Message.INSERT_NET_PRED.toString()+":"+msg[1]+":"+msg[2];
-				msgs.add(strToSucc);
 				try{
 					NetworkManager.sendMessage(strToSucc, this.pair.getIpSuccesseur());
 				}catch(IOException e){
@@ -168,24 +168,15 @@ public class NetworkListener implements Runnable{
 					System.out.println("erreur dans l'envoi de message");
 					e.printStackTrace();
 					System.out.println("ok");
-					//this.pair.signalLeaver(strToSucc, this.pair.getHashSuccesseur());
 				}
-				
+				ArrayList<String> msgs = new ArrayList();
 				String strToNewPeer = Message.INSERT_NET_SUCC.toString()+":"+Integer.toString(this.pair.getHashSuccesseur())+":"+this.pair.getIpSuccesseur();
 				String strToNewPeer1 = Message.INSERT_NET_PRED.toString()+":"+Integer.toString(this.pair.getHash())+":"+this.pair.getIp();
 				msgs.add(strToNewPeer);
+				msgs.add(strToNewPeer1);
 				this.pair.changeSuccesseur(msg[2], hash);
-				try{
-					NetworkManager.sendMessage(strToNewPeer, this.pair.getIpSuccesseur());
-					NetworkManager.sendMessage(strToNewPeer1, this.pair.getIpSuccesseur());
-				}catch(IOException e){
-					this.sendImportantMessage(strToNewPeer, this.pair.getIpSuccesseur());
-					System.out.println("erreur dans l'envoi de message");
-					e.printStackTrace();
-					//this.pair.signalLeaver(strToNewPeer, this.pair.getHashSuccesseur());
-					System.out.println("ok");
-				}
-				
+				sendImportantMessage(msgs, this.pair.getIpSuccesseur());
+	
 				 
 			}else{
 				System.out.println("forward le message");
@@ -244,6 +235,7 @@ public class NetworkListener implements Runnable{
 			}
 		}
 	}
+	
 	
 	public void niceToMeetYouPred(String[] msg){
 		this.pair.changePredecesseur(msg[2], Integer.parseInt(msg[1]));

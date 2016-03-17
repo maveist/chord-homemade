@@ -209,8 +209,9 @@ public class NetworkManager {
 			PrintWriter pw = new PrintWriter(sock.getOutputStream(), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			pw.println("len?");
-			String lenMsg = br.readLine();
-			size = Integer.parseInt(lenMsg);
+			String msg = br.readLine();
+			String[] lenMsg = msg.split(":");
+			size = Integer.parseInt(lenMsg[1]);
 			sock.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

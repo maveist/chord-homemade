@@ -25,8 +25,9 @@ public class Main {
 		NetworkManager.setWelcome(ipServ, 8000);
 		Peer monPair = new Peer();
 
+		//Thread entreeTh = new Thread(new EntreeThread(ipServ, portWelcome, monPair));
 		Thread entreeTh = new Thread(new EntreeThread(monPair));
-		entreeTh.run();
+		entreeTh.start();
 
 		System.out.println("IP: "+ monPair.getIp()+" HASH: "+monPair.getHash());
 		NetworkManager.getInNetwork(ipServ, portWelcome, monPair);
