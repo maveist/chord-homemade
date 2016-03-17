@@ -24,7 +24,8 @@ public class EntreeThread implements Runnable{
 					System.out.println("Envoyer à qui? (spécifiez le numéro de hash):");
 					int hash = Integer.parseInt(reader.readLine());
 					try {
-						this.pair.sendMessage(hash, msg);
+						String toSend = Message.MESSAGE.toString()+":"+Integer.toString(hash)+":"+msg;
+						this.pair.sendMessage(hash, toSend);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

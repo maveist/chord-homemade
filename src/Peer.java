@@ -191,6 +191,19 @@ public class Peer {
 		}
 	}
 	
+	public void sendMessage(int targetedHash, String[] msg){
+		String msgToSend ="";
+		for(int i = 0; i<msg.length; i++){
+			msgToSend += msg[i];
+		}
+		try {
+			this.sendMessage(targetedHash, msgToSend);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public String getIpFromHash(int hash){
 		if (hash == this.hashSuccesseur)
 			return this.ipSuccesseur;

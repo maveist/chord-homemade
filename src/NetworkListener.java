@@ -37,6 +37,14 @@ public class NetworkListener implements Runnable{
 				if(bufmsg != null){
 					String[] msg = bufmsg.split(":");
 						switch(msg[0]){
+							case "msg":
+								int hashDest = Integer.parseInt(msg[1]);
+								if(this.pair.getHash() == hashDest){
+									System.out.println("Message texte reçu: "+msg[2]);
+								}else{
+									this.pair.sendMessage(hashDest, msg);
+								}
+								break;
 							case "in":
 								in(msg);
 								break;
